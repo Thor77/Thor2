@@ -1,5 +1,6 @@
 import socket
 import time
+import sys
 
 class IRCBot:
 
@@ -119,6 +120,7 @@ class IRCBot:
             self.debug('Connected to %s at port %i' % (self.server, self.port), 1)
         else:
             self.debug('Error connecting to server! No server and port set!', 1)
+            sys.exit()
 
     def _send(self, line):
         '''
@@ -131,8 +133,11 @@ class IRCBot:
         '''
         Read lines from the server
         '''
-        raw = self.sock.recv(1024).decode()
+        """
+        raw = self.sock.recv(4096).decode()
         raw = raw.strip()
+        if len(raw) == 0:
+            return []
         raw_lines = raw.split('\n')
         lines = []
         for line in raw_lines:
@@ -140,6 +145,14 @@ class IRCBot:
             # debug
             self.debug('<<' + line, 2)
         return lines
+        """
+        raw = self.sock.recv(4096).decode()
+        raw = raw.strip()
+        if len(raw) == 0:
+            return []
+        lines = raw.split('\r\n')
+        return list(l.strip() for l in lines)
+            
 
     def debug(self, msg, lvl):
         '''
@@ -165,6 +178,7 @@ class IRCBot:
             self.debug('Successfully registered as %s with realname %s!' % (self.nick, self.realname), 1)
         else:
             self.debug('Error registering! No nick or realname set!', 1)
+            sys.exit()
 
     def sendMessage(self, channel, message):
         '''
@@ -188,8 +202,10 @@ class IRCBot:
             self._send('JOIN %s' % chan)
             # create channel object
             self.curr_channel = Channel(chan)
+            self.debug('Joined channel %s!' % chan, 1)
         else:
-            self.debug('Joined channel %s!' % self.channel, 1)
+            self.debug('ERROR: No channel set!', 1)
+            sys.exit()
 
     def names(self, channel):
         '''
@@ -210,15 +226,27 @@ class IRCBot:
         self.connect()
         self.register()
         if self.getCall() == None:
-            return
+            self.debug('ERROR: No call set!', 1)
+            sys.exit()
         while True:
             time.sleep(0.25)
             lines = self._read()
             for line in lines:
+                #try:
                 self._handleLine(line)
+                #except:
+                    #self.debug('There was an error!', 1)
 
     def _handleLine(self, raw_line):
         raw = Raw(self, raw_line)
+        event = raw.getEvent()
+        if event == 'PING':
+            self.pong(raw.getMessage())
+        elif event == '376':
+            # End of MOTD
+            self.join()
+        elif event == 'PRIVMSG':
+            self.debug('<%s> %s' % (raw.getSender(), raw.getMessage()), 1)
 
 class Channel:
 
@@ -256,10 +284,35 @@ class UserMessage:
 class Raw:
 
     def __init__(self, bot, raw):
-        self.raw = raw
-        self.bot = bot
+        # set variables
+        self.event = None
+        self.sender = None
+        self.target = None
+        self.message = None
+        #
         rawline = raw.strip()
-        parts = rawline.split()
+        parts = rawline.split(' ')
 
-    def getType(self):
-        pass
+        # check if ping
+        if parts[0] == 'PING':
+            # yes
+            self.event = parts[0]
+            self.message = parts[1][1:]
+        elif parts[0][0] == ':':
+            # no
+            self.event = parts[1]
+            self.sender = parts[0][1:]
+            self.target = parts[2]
+            self.message = parts[3][1:]
+
+    def getEvent(self):
+        return self.event
+
+    def getSender(self):
+        return self.sender
+
+    def getTarget(self):
+        return self.target
+
+    def getMessage(self):
+        return self.message
