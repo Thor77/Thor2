@@ -151,7 +151,11 @@ class IRCBot:
         if len(raw) == 0:
             return []
         lines = raw.split('\r\n')
-        return list(l.strip() for l in lines)
+        for line in lines:
+            line = line.strip()
+            # debug
+            self.debug('<<' + line, 2)
+        return lines
             
 
     def debug(self, msg, lvl):
