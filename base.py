@@ -148,13 +148,12 @@ class IRCBot:
         """
         raw = self.sock.recv(4096).decode()
         raw = raw.strip()
-        if len(raw) == 0:
-            return []
-        lines = raw.split('\r\n')
-        for line in lines:
-            line = line.strip()
-            # debug
-            self.debug('<<' + line, 2)
+        rawLines = raw.split('\r\n')
+        lines = []
+        for line in rawLines:
+            msg = line.strip()
+            lines.append(msg)
+            self.debug('<<' + msg, 2)
         return lines
             
 
@@ -205,7 +204,7 @@ class IRCBot:
             # join channel
             self._send('JOIN %s' % chan)
             # create channel object
-            self.curr_channel = Channel(chan)
+            self.curr_channel = Channel(self, chan)
             self.debug('Joined channel %s!' % chan, 1)
         else:
             self.debug('ERROR: No channel set!', 1)
@@ -246,7 +245,7 @@ class IRCBot:
         event = raw.getEvent()
         if event == 'PING':
             self.pong(raw.getMessage())
-        elif event == '376':
+        elif event == '376' or event == '422':
             # End of MOTD
             self.join()
         elif event == 'PRIVMSG':
