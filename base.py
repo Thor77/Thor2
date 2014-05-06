@@ -261,7 +261,7 @@ class IRCBot:
         if event == 'PING':
             self.pong(raw.getMessage())
         elif event == '376' or event == '422':
-            # End of MOTD
+            # End of MOTD or Missing MOTD
             self.join()
         elif event == 'PRIVMSG':
             msg = raw.getMessage()
@@ -273,19 +273,6 @@ class IRCBot:
             # join-msg
             joiner = raw.getSender().split('!')[0]
             self.debug('%s joined your channel!' % (joiner), 1)
-
-class Channel:
-
-    def __init__(self, bot, name):
-        self.channelname = name
-        self.bot = bot
-
-    def getName(self):
-        return self.channelname
-
-    def getUsers(self):
-        #self.bot.names(self.getName())
-        pass
 
 class User:
 
