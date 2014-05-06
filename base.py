@@ -117,6 +117,7 @@ class IRCBot:
         '''
         if self.server != None and self.port != None:
             self.sock.connect((self.server, self.port))
+            #self.sock.setblocking(False)
             self.debug('Connected to %s at port %i' % (self.server, self.port), 1)
         else:
             self.debug('Error connecting to server! No server and port set!', 1)
@@ -129,7 +130,7 @@ class IRCBot:
         self.debug('>>' + line, 2)
         self.sock.send((line + '\r\n').encode())
 
-    def _read(self):
+    #def _read(self):
         '''
         Read lines from the server
         '''
@@ -146,16 +147,29 @@ class IRCBot:
             self.debug('<<' + line, 2)
         return lines
         """
+    def _read(self):
+        b = ''
+        data = True
+        while data:
+            raw = self.sock.recv(4096).decode()
+            b += raw
+            while b.find('\n') != -1:
+                line, b = b.split('\n', 1)
+                yield line
+        return
+        """
+        lines = []
         raw = self.sock.recv(4096).decode()
         raw = raw.strip()
+        if len(raw) == 0:
+            return lines
         rawLines = raw.split('\r\n')
-        lines = []
         for line in rawLines:
             msg = line.strip()
             lines.append(msg)
             self.debug('<<' + msg, 2)
         return lines
-            
+        """
 
     def debug(self, msg, lvl):
         '''
@@ -231,14 +245,10 @@ class IRCBot:
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
-        while True:
-            time.sleep(0.25)
-            lines = self._read()
-            for line in lines:
-                #try:
-                self._handleLine(line)
-                #except:
-                    #self.debug('There was an error!', 1)
+        for line in self._read():
+            time.sleep(0.25) # wait
+            self.debug('<<' + line, 2) # debug
+            self._handleLine(line) # handle line
 
     def _handleLine(self, raw_line):
         raw = Raw(self, raw_line)
@@ -249,7 +259,14 @@ class IRCBot:
             # End of MOTD
             self.join()
         elif event == 'PRIVMSG':
-            self.debug('<%s> %s' % (raw.getSender(), raw.getMessage()), 1)
+            msg = raw.getMessage()
+            if msg == '!q':
+                sys.exit()
+            self.debug('<%s> %s' % (raw.getSender(), msg), 1)
+        elif event == 'JOIN':
+            # join-msg
+            joiner = raw.getSender()
+            self.debug('%s joined your channel!' % (joiner), 1)
 
 class Channel:
 
@@ -306,7 +323,9 @@ class Raw:
             self.event = parts[1]
             self.sender = parts[0][1:]
             self.target = parts[2]
-            self.message = parts[3][1:]
+            if len(parts) > 2:
+                parts = parts[3:]
+                self.message = ' '.join(parts)[1:]
 
     def getEvent(self):
         return self.event
