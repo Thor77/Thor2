@@ -14,6 +14,8 @@ class IRCBot:
         self.port = None # port
         self.call = None
         self.channel = None
+        self.commands = {}
+        self.eventlisteners = {}
         #
         self.curr_channel = None
 
@@ -178,6 +180,43 @@ class IRCBot:
         if self.debuglevel >= lvl:
             print(msg)
 
+    # commands
+    def addCommand(self, trigger, function, helpstring):
+        if not trigger in self.commands:
+            self.commands[trigger.lower()] = [function, helpstring]
+
+    def deleteAllCommands(self):
+        self.commands = {}
+
+    def deleteCommand(self, trigger):
+        if trigger in self.commands:
+            del self.commands[trigger]
+
+    # events
+    def registerEvent(self, eventname, function):
+        if not eventname in self.eventlisteners:
+            self.eventlisteners[eventname] = []
+        a = self.eventlisteners[eventname]
+        a.append(function)
+
+    def gotEvent(self, eventname):
+        if eventname in self.eventlisteners:
+            a = self.eventlisteners[eventname]
+            for index, func in enumerate(a):
+                a[index](eventname)
+                self.debug('"%s" executed by event "%s"!' % (func, eventname), 2)
+        else:
+            self.debug('No listener for event "%s"!' % eventname, 2)
+
+    def unregisterEvent(self, eventname, function):
+        if eventname in self.eventlisteners:
+            a = self.eventlisteners[eventname]
+            if function in a:
+                a.remove(function)
+    
+    def unregisterAllEvents(self):
+        self.eventlisteners = {}        
+
     # IRC-Functions
     def pong(self, ping):
         '''
@@ -265,6 +304,7 @@ class IRCBot:
         elif event == 'PRIVMSG':
             msg = raw.getMessage()
             sender = raw.getSender().split('!')[0]
+            msgobj = UserMessage(msg, sender)
             if msg == '!q':
                 self.quit()
             self.debug('<%s> %s' % (sender, msg), 1)
@@ -284,14 +324,15 @@ class User:
 
 class UserMessage:
 
-    def __init__(self, msg):
+    def __init__(self, msg, sender):
         self.message = message
+        self.sender = sender
 
     def getMessage(self):
         return self.message
 
     def getSender(self):
-        pass
+        return self.sender
 
 class Raw:
 
@@ -330,3 +371,18 @@ class Raw:
 
     def getMessage(self):
         return self.message
+
+class MessageEvent:
+    def __init__(self, user, channel, message):
+        self.user = user
+        self.channel = channel
+        self.message = message
+
+    def getMessage(self):
+        return self.message
+
+    def getChannel(self):
+        return self.channel
+
+    def getSender(self):
+        return self.user
