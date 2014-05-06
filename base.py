@@ -236,6 +236,11 @@ class IRCBot:
         '''
         self._send('WHOIS %s' % nick)
 
+    def quit(self, quitmsg='Bye!'):
+        time.sleep(0.5)
+        self._send('QUIT %s' % quitmsg)
+        sys.exit()
+
     # Loop
 
     def start(self):
@@ -246,7 +251,7 @@ class IRCBot:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
         for line in self._read():
-            time.sleep(0.25) # wait
+            #time.sleep(0.25) # wait
             self.debug('<<' + line, 2) # debug
             self._handleLine(line) # handle line
 
@@ -260,12 +265,13 @@ class IRCBot:
             self.join()
         elif event == 'PRIVMSG':
             msg = raw.getMessage()
+            sender = raw.getSender().split('!')[0]
             if msg == '!q':
-                sys.exit()
-            self.debug('<%s> %s' % (raw.getSender(), msg), 1)
+                self.quit()
+            self.debug('<%s> %s' % (sender, msg), 1)
         elif event == 'JOIN':
             # join-msg
-            joiner = raw.getSender()
+            joiner = raw.getSender().split('!')[0]
             self.debug('%s joined your channel!' % (joiner), 1)
 
 class Channel:
