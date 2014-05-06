@@ -217,8 +217,7 @@ class IRCBot:
         if chan != None:
             # join channel
             self._send('JOIN %s' % chan)
-            # create channel object
-            self.curr_channel = Channel(self, chan)
+            # debug
             self.debug('Joined channel %s!' % chan, 1)
         else:
             self.debug('ERROR: No channel set!', 1)
