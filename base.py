@@ -369,18 +369,22 @@ class IRCBot:
         #self.loadPlugins()
         self.connect()
         self.register()
-        if self.authpassword != None:
-            self.auth(self.getNick(), self.getAuthPassword())
         self.loadAllPlugins()
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
+        # auth first
+        if self.authpassword != None:
+            self.auth(self.getNick(), self.getAuthPassword())
+            self.debug('Successfully authed with nick %s!' % self.getNick(), 1)
+
         for line in self._read():
             #time.sleep(0.25) # wait
             self.debug('<<' + line, 2) # debug
             self._handleLine(line) # handle line
 
     def _handleLine(self, raw_line):
+        # handle lines
         raw = Raw(self, raw_line)
         event = raw.getEvent()
         if event == 'PING':
