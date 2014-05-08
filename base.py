@@ -199,8 +199,11 @@ class IRCBot:
 
     def gotCommand(self, command, sender, args):
         if command in self.commands:
-            self.commands[command][0](sender, args)
-            self.debug('Executed %s!' % self.commands[command][0], 2)
+            try:
+                self.commands[command][0](sender, args)
+                self.debug('Executed %s!' % self.commands[command][0], 2)
+            except:
+                self.sendNotice('There was an error while executing your command!', sender)
 
     def deleteAllCommands(self):
         self.commands = {}
