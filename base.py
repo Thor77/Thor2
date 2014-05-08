@@ -373,10 +373,6 @@ class IRCBot:
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
-        # auth first
-        if self.authpassword != None:
-            self.auth(self.getNick(), self.getAuthPassword())
-            self.debug('Successfully authed with nick %s!' % self.getNick(), 1)
 
         for line in self._read():
             #time.sleep(0.25) # wait
@@ -391,6 +387,11 @@ class IRCBot:
             self.pong(raw.getMessage())
         elif event == '376' or event == '422':
             # End of MOTD or Missing MOTD
+            # auth first
+            if self.authpassword != None:
+                self.auth(self.getNick(), self.getAuthPassword())
+                self.debug('Successfully authed with nick %s!' % self.getNick(), 1)
+            # join
             self.join()
         elif event == 'PRIVMSG':
             msgobj = UserMessage(raw.getMessage(), raw.getSender().split('!')[0])
