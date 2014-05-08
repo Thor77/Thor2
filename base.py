@@ -108,7 +108,7 @@ class IRCBot:
         '''
         self.channel = channel
 
-    def getChannel(self, channel):
+    def getChannel(self):
         '''
         get the channel
         '''
