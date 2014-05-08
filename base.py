@@ -345,7 +345,7 @@ class IRCBot:
         time.sleep(1)
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
-        sys.exit()
+        sys.exit(0)
 
     # Loop
 
