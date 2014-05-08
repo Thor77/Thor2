@@ -396,7 +396,7 @@ class IRCBot:
             if joiner != self.getNick():
                 # event
                 eventobj = UserJoinEvent(joiner)
-                self.gotEvent('onUserJoin')
+                self.gotEvent('onUserJoin', eventobj)
                 # debug
                 self.debug('%s joined your channel!' % (joiner), 1)
 
