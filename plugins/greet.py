@@ -39,4 +39,4 @@ class Greet(Plugin):
 			status = 'enabled'
 		else:
 			status = 'disabled'
-		self.sendNotice('Greeting is %s!' % status)
+		self.sendNotice('Greeting is %s!' % status, sender)
