@@ -1,6 +1,11 @@
 import socket
 import time
 import sys
+import plugins
+import imp
+import pkgutil
+import inspect
+from plugin import Plugin
 
 class IRCBot:
 
@@ -16,6 +21,9 @@ class IRCBot:
         self.channel = None
         self.commands = {}
         self.eventlisteners = {}
+        self.plugins = []
+        self.loadedPlugins = []
+        self.commandsByPlugin = {}
         #
         self.curr_channel = None
 
@@ -181,12 +189,22 @@ class IRCBot:
             print(msg)
 
     # commands
-    def addCommand(self, trigger, function, helpstring):
+    def addCommand(self, trigger, function, helpstring, plugin):
         if not trigger in self.commands:
-            self.commands[trigger.lower()] = [function, helpstring]
+            self.commands[trigger.lower()] = [function, helpstring, plugin]
+            if plugin in self.commandsByPlugin:
+                self.commandsByPlugin[plugin].append(trigger)
+            else:
+                self.commandsByPlugin[plugin] = [trigger]
+
+    def gotCommand(self, command, sender, args):
+        if command in self.commands:
+            self.commands[command][0](sender, args)
+            self.debug('Executed %s!' % self.commands[command][0], 2)
 
     def deleteAllCommands(self):
         self.commands = {}
+        self.commandsByPlugin = {}
 
     def deleteCommand(self, trigger):
         if trigger in self.commands:
@@ -199,11 +217,11 @@ class IRCBot:
         a = self.eventlisteners[eventname]
         a.append(function)
 
-    def gotEvent(self, eventname):
+    def gotEvent(self, eventname, eventobj):
         if eventname in self.eventlisteners:
             a = self.eventlisteners[eventname]
             for index, func in enumerate(a):
-                a[index](eventname)
+                a[index](eventobj)
                 self.debug('"%s" executed by event "%s"!' % (func, eventname), 2)
         else:
             self.debug('No listener for event "%s"!' % eventname, 2)
@@ -215,7 +233,43 @@ class IRCBot:
                 a.remove(function)
     
     def unregisterAllEvents(self):
-        self.eventlisteners = {}        
+        self.eventlisteners = {}
+
+    # plugins
+    def unloadPlugins(self):
+        self.deleteAllCommands()
+        self.unregisterAllEvents()
+        print(self.plugins)
+        for plugin in self.plugins:
+            plugin.unload()
+        self.plugins = []
+        self.loadedPlugins = []
+
+    def loadPlugin(self, modname):
+        module = __import__(modname, fromlist='dummy')
+        imp.reload(module)
+        for name, obj in inspect.getmembers(module):
+            if inspect.isclass(obj) and issubclass(obj, Plugin) and obj != Plugin:
+                plugin = obj(self)
+                self.plugins.append(plugin)
+                self.loadedPlugins.append(modname.split('.')[-1])
+                print('Loaded plugin ' + modname)
+                print('Plugins: ' + ', '.join(self.loadedPlugins))
+
+    def loadAllPlugins(self):
+        prefix = plugins.__name__ + '.'
+        for importer, modname, ispkg in pkgutil.iter_modules(plugins.__path__, prefix):
+            del importer
+            print('Loading %s' % modname)
+            self.loadPlugin(modname)
+
+    def reloadPlugins(self):
+        print('Start reloading plugins...')
+        self.unloadPlugins()
+        print('Finished unloading plugins...')
+        self.loadAllPlugins()
+        print('Finished loading plugins...')
+        print('Finished reloading plugins!')  
 
     # IRC-Functions
     def pong(self, ping):
@@ -236,13 +290,16 @@ class IRCBot:
             self.debug('Error registering! No nick or realname set!', 1)
             sys.exit()
 
-    def sendMessage(self, channel, message):
+    def sendMessage(self, message, reciever=None):
         '''
         Send message to channel
         '''
-        self._send('PRIVMSG %s :%s' % (channel.getName(), message))
+        if reciever == None:
+            reciever = self.curr_channel
+        self._send('PRIVMSG %s :%s' % (reciever, message))
+        self.debug('<%s> %s' % (self.getNick(), message), 1)
 
-    def sendNotice(self, nick, message):
+    def sendNotice(self, message, nick):
         '''
         Send a notice to nick
         '''
@@ -256,6 +313,11 @@ class IRCBot:
         if chan != None:
             # join channel
             self._send('JOIN %s' % chan)
+            # set curr_channel
+            self.curr_channel = chan
+            # event
+            eventobj = SelfJoinEvent(chan)
+            self.gotEvent('onSelfJoin', eventobj)
             # debug
             self.debug('Joined channel %s!' % chan, 1)
         else:
@@ -275,8 +337,11 @@ class IRCBot:
         self._send('WHOIS %s' % nick)
 
     def quit(self, quitmsg='Bye!'):
-        time.sleep(0.5)
+        self.debug('Exit now!', 1)
         self._send('QUIT %s' % quitmsg)
+        time.sleep(1)
+        self.sock.shutdown(socket.SHUT_RDWR)
+        self.sock.close()
         sys.exit()
 
     # Loop
@@ -285,6 +350,7 @@ class IRCBot:
         #self.loadPlugins()
         self.connect()
         self.register()
+        self.loadAllPlugins()
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
@@ -302,16 +368,34 @@ class IRCBot:
             # End of MOTD or Missing MOTD
             self.join()
         elif event == 'PRIVMSG':
-            msg = raw.getMessage()
-            sender = raw.getSender().split('!')[0]
-            msgobj = UserMessage(msg, sender)
-            if msg == '!q':
-                self.quit()
-            self.debug('<%s> %s' % (sender, msg), 1)
+            msgobj = UserMessage(raw.getMessage(), raw.getSender().split('!')[0])
+            # debug
+            self.debug('<%s> %s' % (msgobj.getSender(), msgobj.getMessage()), 1)
+            # run event
+            eventobj = MessageEvent(msgobj.getSender(), msgobj.getMessage())
+            self.gotEvent('onUserMessage', eventobj)
+            # commands
+            call = self.getCall()
+            # look for command
+            if msgobj.getMessage()[:(len(call))] == call:
+                # call found
+                self.debug('Found command!', 2)
+                msg = msgobj.getMessage()
+                msg_withoutcall = msg[len(call):]
+                msg_withoutcall_split = msg_withoutcall.split(' ')
+                cmd = msg_withoutcall_split[0]
+                args = msg_withoutcall_split[1:]
+                self.debug('Command: %s Arguments: %s' % (cmd, args), 2)
+                self.gotCommand(cmd, msgobj.getSender(), args)
         elif event == 'JOIN':
             # join-msg
             joiner = raw.getSender().split('!')[0]
-            self.debug('%s joined your channel!' % (joiner), 1)
+            if joiner != self.getNick():
+                # event
+                eventobj = UserJoinEvent(joiner)
+                self.gotEvent('onUserJoin')
+                # debug
+                self.debug('%s joined your channel!' % (joiner), 1)
 
 class User:
 
@@ -324,7 +408,7 @@ class User:
 
 class UserMessage:
 
-    def __init__(self, msg, sender):
+    def __init__(self, message, sender):
         self.message = message
         self.sender = sender
 
@@ -373,16 +457,26 @@ class Raw:
         return self.message
 
 class MessageEvent:
-    def __init__(self, user, channel, message):
+    def __init__(self, user, message):
         self.user = user
-        self.channel = channel
         self.message = message
 
     def getMessage(self):
         return self.message
 
-    def getChannel(self):
-        return self.channel
-
     def getSender(self):
+        return self.user
+
+class SelfJoinEvent:
+    def __init__(self, channel):
+        self.chan = channel
+
+    def getChannel(self):
+        return self.chan
+
+class UserJoinEvent:
+    def __init__(self, user):
+        self.user = user
+
+    def getUser(self):
         return self.user
