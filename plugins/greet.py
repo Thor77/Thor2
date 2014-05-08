@@ -10,7 +10,7 @@ class Greet(Plugin):
 		self.registerEvent('onSelfJoin', self.onSelfJoin)
 
 	def onUserJoin(self, eventobj):
-		joiner = eventobj.User()
+		joiner = eventobj.getUser()
 		self.sendMessage('Herzlich Willkommen %s! Du bist hier in %s.' % (joiner, self.sock.getChannel))
 
 	def onSelfJoin(self, eventobj):
