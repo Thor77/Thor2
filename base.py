@@ -19,6 +19,7 @@ class IRCBot:
         self.port = None # port
         self.call = None
         self.channel = None
+        self.authpassword = None
         self.commands = {}
         self.eventlisteners = {}
         self.plugins = []
@@ -114,11 +115,23 @@ class IRCBot:
         '''
         return self.channel
 
-    def getCurrentChannel(self, channel):
+    def getCurrentChannel(self):
         '''
         returns a channel object of the current channel
         '''
         return self.curr_channel
+
+    def setAuthPassword(self, password):
+        '''
+        set the authpassword (optional)
+        '''
+        self.authpassword = password
+
+    def getAuthPassword(self):
+        '''
+        returns the auth password
+        '''
+        return self.authpassword
 
     # functions
     def connect(self):
@@ -347,12 +360,17 @@ class IRCBot:
         self.sock.close()
         sys.exit(0)
 
+    def auth(self, nick, password):
+        self._send('AUTH %s %s' % (nick, password))
+
     # Loop
 
     def start(self):
         #self.loadPlugins()
         self.connect()
         self.register()
+        if self.authpassword != None:
+            self.auth(self.getNick(), self.getAuthPassword())
         self.loadAllPlugins()
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
