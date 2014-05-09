@@ -11,6 +11,7 @@ class Greet(Plugin):
 		# events
 		self.registerEvent('onUserJoin', self.onUserJoin)
 		self.registerEvent('onSelfJoin', self.onSelfJoin)
+		self.registerEvent('onUserQuit', self.onUserQuit)
 
 	def onUserJoin(self, eventobj):
 		if self.greet:
@@ -19,6 +20,10 @@ class Greet(Plugin):
 
 	def onSelfJoin(self, eventobj):
 		self.sendMessage('So, ich bin dann auch mal da...')
+
+	def onUserQuit(self, eventobj):
+		if self.greet:
+			quituser = eventobj.getUser()
 
 	def dgreet_func(self, sender, args):
 		if not self.greet:

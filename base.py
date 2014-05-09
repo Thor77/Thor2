@@ -455,6 +455,14 @@ class IRCBot:
                 self.gotEvent('onUserJoin', eventobj)
                 # debug
                 self.debug('%s joined your channel!' % (joiner), 1)
+        elif event == 'PART' or event == 'QUIT':
+            quituser = raw.getSender().split('!')[0]
+            if quituser != self.getNick():
+                # event
+                eventobj = UserQuitEvent(quituser)
+                self.gotEvent('onUserQuit', eventobj)
+                # debug
+                self.debug('%s parted from your channel!' % quituser, 1)
 
 class User:
 
@@ -534,6 +542,13 @@ class SelfJoinEvent:
         return self.chan
 
 class UserJoinEvent:
+    def __init__(self, user):
+        self.user = user
+
+    def getUser(self):
+        return self.user
+
+class  UserQuitEvent:
     def __init__(self, user):
         self.user = user
 
