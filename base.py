@@ -215,6 +215,8 @@ class IRCBot:
             try:
                 self.commands[command][0](sender, args)
                 self.debug('Executed %s!' % self.commands[command][0], 2)
+            except IndexError:
+                self.sendNotice('Too less arguments! Try %shelp %s for further information!' % (self.getCall(), command), sender)
             except:
                 self.sendNotice('There was an error while executing your command!', sender)
 
@@ -321,24 +323,27 @@ class IRCBot:
         '''
         self._send('NOTICE %s :%s' % (nick, message))
 
-    def join(self):
+    def join(self, channel=None):
         '''
         join channel
         '''
-        chan = self.channel
-        if chan != None:
-            # join channel
-            self._send('JOIN %s' % chan)
-            # set curr_channel
-            self.curr_channel = chan
-            # event
-            eventobj = SelfJoinEvent(chan)
-            self.gotEvent('onSelfJoin', eventobj)
-            # debug
-            self.debug('Joined channel %s!' % chan, 1)
+        if channel != None:
+            chan = channel
+        elif self.channel != None:
+            chan = self.channel
         else:
             self.debug('ERROR: No channel set!', 1)
             sys.exit()
+        # join channel
+        self._send('JOIN %s' % chan)
+        # set curr_channel
+        self.curr_channel = chan
+        # event
+        eventobj = SelfJoinEvent(chan)
+        self.gotEvent('onSelfJoin', eventobj)
+        # debug
+        self.debug('Joined channel %s!' % chan, 1)
+
 
     def names(self, channel):
         '''
@@ -362,6 +367,34 @@ class IRCBot:
 
     def auth(self, nick, password):
         self._send('AUTH %s %s' % (nick, password))
+
+    def kick(self, nick, reason=None):
+        if reason != None:
+            self._send('KICK %s :%s' % (nick, reason))
+        else:
+            self._send('KICK %s' % nick)
+
+    def part(self, channel=None):
+        if channel == None:
+            channel = self.getCurrentChannel()
+        self._send('PART %s' % channel)
+
+    def changeChannel(self, changeTo):
+        self.part()
+        self.join(changeTo)
+
+    # modes
+    def op(self, nick):
+        self._send('MODE %s +o %s' % (self.getCurrentChannel(), nick))
+
+    def deop(self, nick):
+        self._send('MODE %s -o %s' % (self.getCurrentChannel(), nick))
+
+    def voice(self, nick):
+        self._send('MODE %s +v %s' % (self.getCurrentChannel(), nick))
+
+    def devoice(self, nick):
+        self._send('MODE %s -v %s' % (self.getCurrentChannel(), nick))
 
     # Loop
 

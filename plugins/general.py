@@ -9,6 +9,7 @@ class General(Plugin):
         self.addCommand('setmsgdelay', self.changeMessageDelay_func, 'cdelay <seconds> | change the delay between messages sent by the bot to <seconds>')
         self.addCommand('showmsgdelay', self.showMessageDelay_func, 'shows the current message-delay')
         self.addCommand('raw', self.raw_func, 'raw <raw> | sends <raw> to the server')
+        self.addCommand('action', self.action_func, 'action <action> | send action to the current channel')
 
         # events
         self.registerEvent('onUserMessage', self.onMessage)
@@ -41,3 +42,7 @@ class General(Plugin):
         raw = ' '.join(args)
         self.sock.debug('--%s--' % sender, 2)
         self.sock._send(raw)
+
+    def action_func(self, sender, args):
+        action = ' '.join(args)
+        self.sendMessage('\x01ACTION %s\x01' % action)
