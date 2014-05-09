@@ -15,7 +15,7 @@ class Greet(Plugin):
 	def onUserJoin(self, eventobj):
 		if self.greet:
 			joiner = eventobj.getUser()
-			self.sendMessage('Herzlich Willkommen %s! Du bist hier in %s.' % (joiner, self.sock.getChannel()))
+			self.sendMessage('Herzlich Willkommen %s! Du bist hier in %s.' % (joiner, self.sock.getCurrentChannel()))
 
 	def onSelfJoin(self, eventobj):
 		self.sendMessage('So, ich bin dann auch mal da...')
