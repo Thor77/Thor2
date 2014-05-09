@@ -3,6 +3,8 @@ from plugin import Plugin
 class General(Plugin):
     def onLoad(self):
         # commands
+        self.addCommand('kick', self.kick_func, 'kick <user> [<reason>] | kick <user> [with <reason>]')
+        self.addCommand('cc', self.cc_func, 'cc <newchan> | part current channel and join <newchan>')
         self.addCommand('say', self.say_func, 'say <message> | send <message> to the current channel')
         self.addCommand('reload', self.reload_func, 'Reload plugins')
         self.addCommand('quit', self.quit_func, 'Disconnect from the server and exit')
@@ -46,3 +48,14 @@ class General(Plugin):
     def action_func(self, sender, args):
         action = ' '.join(args)
         self.sendMessage('\x01ACTION %s\x01' % action)
+
+    def kick_func(self, sender, args):
+        if len(args) == 1:
+            self.sock.kick(args[0])
+        elif len(args) > 1:
+            self.sock.kick(args[0], ' '.join(args[1:]))
+
+    def cc_func(self, sender, args):
+        newchan = args[0]
+        self.sendMessage('Ich gehe jetzt nach %s!' % newchan)
+        self.sock.changeChannel(newchan)
