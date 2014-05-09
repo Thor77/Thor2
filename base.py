@@ -255,7 +255,7 @@ class IRCBot:
     def unloadPlugins(self):
         self.deleteAllCommands()
         self.unregisterAllEvents()
-        print(self.plugins)
+        self.debug(self.plugins, 2)
         for plugin in self.plugins:
             plugin.unload()
         self.plugins = []
@@ -269,23 +269,23 @@ class IRCBot:
                 plugin = obj(self)
                 self.plugins.append(plugin)
                 self.loadedPlugins.append(modname.split('.')[-1])
-                print('Loaded plugin ' + modname)
-                print('Plugins: ' + ', '.join(self.loadedPlugins))
+                self.debug('Loaded plugin ' + modname, 2)
+                self.debug('Plugins: ' + ', '.join(self.loadedPlugins), 2)
 
     def loadAllPlugins(self):
         prefix = plugins.__name__ + '.'
         for importer, modname, ispkg in pkgutil.iter_modules(plugins.__path__, prefix):
             del importer
-            print('Loading %s' % modname)
+            self.debug('Loading %s' % modname, 2)
             self.loadPlugin(modname)
 
     def reloadPlugins(self):
-        print('Start reloading plugins...')
+        self.debug('Start reloading plugins...', 2)
         self.unloadPlugins()
-        print('Finished unloading plugins...')
+        self.debug('Finished unloading plugins...', 2)
         self.loadAllPlugins()
-        print('Finished loading plugins...')
-        print('Finished reloading plugins!')  
+        self.debug('Finished loading plugins...', 2)
+        self.debug('Finished reloading plugins!', 2)  
 
     # IRC-Functions
     def pong(self, ping):
