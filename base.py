@@ -370,9 +370,9 @@ class IRCBot:
 
     def kick(self, nick, reason=None):
         if reason != None:
-            self._send('KICK %s :%s' % (nick, reason))
+            self._send('KICK %s %s :%s' % (self.getCurrentChannel(), nick, reason))
         else:
-            self._send('KICK %s' % nick)
+            self._send('KICK %s %s' % (self.getCurrentChannel(), nick))
 
     def part(self, channel=None):
         if channel == None:
