@@ -33,7 +33,7 @@ class Help(Plugin):
     def info_func(self, sender, args):
         self.sendMessage('Creator => {color}07Thor77{color}'.format(color=self.color_code))
         self.sendMessage('Helper => {color}07Butt4cak3{color}'.format(color=self.color_code))
-        self.sendMessage('Github => {color}07https://github.com/Thor77/PythonIrcBot{color}'.format(color=self.color_code))
+        self.sendMessage('Github => {color}07https://github.com/Thor77/Thor2{color}'.format(color=self.color_code))
         self.sendMessage('Commandlist => {color}07{call}commands{color}'.format(color=self.color_code, call=self.sock.call))
         self.sendMessage('Pluginlist => {color}07{call}plugins{color}'.format(color=self.color_code, call=self.sock.call))
 
