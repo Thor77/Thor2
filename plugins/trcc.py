@@ -34,3 +34,4 @@ class TheRadioCC(Plugin):
 				# announcte
 				self.debug('Announcing...', 1)
 				self.sendMessage(current)
+		threading.Timer(10, self.announce).start()
