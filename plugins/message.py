@@ -20,17 +20,14 @@ class Message(Plugin):
                     msg = d[sender]
                     self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg))
             del self.messages[joiner]
-            print(self.messages)
 
     def addMessage_func(self, sender, args):
         nick = args[0]
         msg = ' '.join(args[1:])
         if nick in self.messages:
             self.messages[nick].append({sender : msg})
-            print(self.messages)
         else:
             self.messages[nick] = [{sender : msg}] # {'nick' : {'sender1' : 'nachricht1', 'sender2' : 'nachricht2'}, ...}
-            print(self.messages)
         self.sendNotice('Message successfully added!', sender)
         self.sendNotice('Message: %s' % msg, sender)
         self.sendNotice('Nick: %s' % nick, sender)
