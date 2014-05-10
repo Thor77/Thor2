@@ -15,9 +15,10 @@ class Message(Plugin):
         joiner = eventobj.getUser()
         if joiner in self.messages:
             self.sendMessage('Hallo %s, es wurden Nachrichten für dich hinterlassen:' % joiner)
-            for sender in self.messages[joiner]:
-                msg = self.messages[joiner][0][sender]
-                self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg))
+            for d in self.messages[joiner]:
+                for sender in d:
+                    msg = d[sender]
+                    self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg))
             del self.messages[joiner]
             print(self.messages)
 
