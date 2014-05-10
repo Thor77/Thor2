@@ -9,7 +9,7 @@ class Message(Plugin):
         self.addCommand('addMessage', self.addMessage_func, 'addMessage <nick> <msg> | if <nick> joins the channel, he/she will get <message>')
         # events
         self.registerEvent('onUserJoin', self.onUserJoin)
-        self.registerEvent('onUserMessage', self.onUserMessage)
+        #self.registerEvent('onUserMessage', self.onUserMessage)
 
     def onUserJoin(self, eventobj):
         joiner = eventobj.getUser()
