@@ -211,7 +211,7 @@ class IRCBot:
                 self.commandsByPlugin[plugin] = [trigger]
 
     def gotCommand(self, command, sender, args):
-        if command in self.commands:
+        if command.lower() in self.commands:
             try:
                 self.commands[command][0](sender, args)
                 self.debug('Executed %s!' % self.commands[command][0], 2)
