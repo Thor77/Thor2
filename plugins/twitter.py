@@ -41,7 +41,7 @@ class Twitter(Plugin):
         self.sendMessage('Current Hashtag: %s' % self.hashtag)
 
     def showDelay_func(self, sender, args):
-        self.sendMessage('Current delay: ' % self.delay)
+        self.sendMessage('Current delay: %s' % self.delay)
 
     def sendTweet(self):
         tweet = self.t.search(q=self.hashtag, result_type='recent')['statuses'][0]['text']
