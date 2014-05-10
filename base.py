@@ -11,22 +11,22 @@ class IRCBot:
 
     def __init__(self):
         # variables
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.debuglevel = 2 # 0 => nothing 1 => important messages 2 => everything
-        self.realname = None # realname
-        self.nick = None # nick
-        self.server = None # server
-        self.port = None # port
-        self.call = None
-        self.channel = None
-        self.authpassword = None
-        self.commands = {}
-        self.eventlisteners = {}
-        self.plugins = []
-        self.loadedPlugins = []
+        self.sock             = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.debuglevel       = 2 # 0 => nothing 1 => important messages 2 => everything
+        self.realname         = None # realname
+        self.nick             = None # nick
+        self.server           = None # server
+        self.port             = None # port
+        self.call             = None
+        self.channel          = None
+        self.authpassword     = None
+        self.commands         = {}
+        self.eventlisteners   = {}
+        self.plugins          = []
+        self.loadedPlugins    = []
         self.commandsByPlugin = {}
         #
-        self.curr_channel = None
+        self.curr_channel     = None
 
         # function calls
 
