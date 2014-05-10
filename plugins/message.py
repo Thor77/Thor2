@@ -18,7 +18,7 @@ class Message(Plugin):
             for sender in self.messages[joiner]:
                 msg = self.messages[joiner]
                 print(msg)
-                self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg[sender]))
+                self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg))
             del self.messages[joiner]
             print(self.messages)
 
