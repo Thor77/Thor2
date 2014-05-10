@@ -16,7 +16,9 @@ class Message(Plugin):
         if joiner in self.messages:
             self.sendMessage('Hallo %s, es wurden Nachrichten für dich hinterlassen:' % joiner)
             for sender in self.messages[joiner]:
-                self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=self.messages[joiner][sender]))
+                msg = self.messages[joiner]
+                print(msg)
+                self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg[sender]))
             del self.messages[joiner]
             print(self.messages)
 
@@ -29,3 +31,6 @@ class Message(Plugin):
         else:
             self.messages[nick] = {sender, msg} # {'nick' : {'sender1' : 'nachricht1', 'sender2' : 'nachricht2'}, ...}
             print(self.messages)
+        self.sendNotice('Message successfully added!')
+        self.sendNotice('Message: %s' % msg, sender)
+        self.sendNotice('Nick: %s' % nick, sender)
