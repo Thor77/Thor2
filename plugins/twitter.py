@@ -8,6 +8,7 @@ class Twitter(Plugin):
         self.enabled = False
         self.delay = 60
         self.hashtag = '#esc'
+        self.lastTweet = None
         consumer_key    = 'kzrUWTG08A5aIjO6IJjuA'
         consumer_secret = '5ivJzkNJGrrSmq6FliYKfZiZIpXROoU9SH5neO52ebw'
         access_key      = '2338381512-c1y1OR6ClMt24NaENdJqZuNCZtO4VqA9MqQdQuf'
@@ -47,6 +48,8 @@ class Twitter(Plugin):
 
     def sendTweet(self):
         tweet = self.t.search(q=self.hashtag, result_type='recent')['statuses'][0]['text']
-        self.sendMessage(tweet)
-        if self.enabled:
-            threading.Timer(self.delay, self.sendTweet).start()
+        if tweet != self.lastTweet:
+            self.lastTweet = tweet
+            self.sendMessage(tweet)
+            if self.enabled:
+                threading.Timer(self.delay, self.sendTweet).start()
