@@ -26,7 +26,7 @@ class Message(Plugin):
         nick = args[0]
         msg = ' '.join(args[1:])
         if nick in self.messages:
-            self.messages[nick].append(sender, msg)
+            self.messages[nick].append({sender, msg})
             print(self.messages)
         else:
             self.messages[nick] = {sender, msg} # {'nick' : {'sender1' : 'nachricht1', 'sender2' : 'nachricht2'}, ...}
