@@ -33,9 +33,11 @@ class Twitter(Plugin):
     def setDelay_func(self, sender, args):
         newdelay = args[0]
         self.delay = int(newdelay)
+        self.sendNotice('Delay set to %s!' % newdelay, sender)
 
     def setHashtag_func(self, sender, args):
         self.hashtag = '#' + args[0]
+        self.sendNotice('Hashtag set to %s!' % self.hashtag, sender)
 
     def showHashtag_func(self, sender, args):
         self.sendMessage('Current Hashtag: %s' % self.hashtag)
