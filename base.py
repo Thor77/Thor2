@@ -359,7 +359,7 @@ class IRCBot:
 
     def quit(self, quitmsg='Bye!'):
         self.debug('Exit now!', 1)
-        self._send('QUIT %s' % quitmsg)
+        self._send('QUIT :%s' % quitmsg)
         time.sleep(1)
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
