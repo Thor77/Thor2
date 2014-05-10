@@ -31,6 +31,6 @@ class Message(Plugin):
         else:
             self.messages[nick] = {sender, msg} # {'nick' : {'sender1' : 'nachricht1', 'sender2' : 'nachricht2'}, ...}
             print(self.messages)
-        self.sendNotice('Message successfully added!')
+        self.sendNotice('Message successfully added!', sender)
         self.sendNotice('Message: %s' % msg, sender)
         self.sendNotice('Nick: %s' % nick, sender)
