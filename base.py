@@ -217,8 +217,8 @@ class IRCBot:
                 self.debug('Executed %s!' % self.commands[command][0], 2)
             except IndexError:
                 self.sendNotice('Too less arguments! Try %shelp %s for further information!' % (self.getCall(), command), sender)
-            except:
-                self.sendNotice('There was an error while executing your command!', sender)
+            #except:
+            self.sendNotice('There was an error while executing your command!', sender)
 
     def deleteAllCommands(self):
         self.commands = {}
