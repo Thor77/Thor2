@@ -6,6 +6,7 @@ import imp
 import pkgutil
 import inspect
 from plugin import Plugin
+import sqlite3
 
 class IRCBot:
 
@@ -25,6 +26,7 @@ class IRCBot:
         self.plugins          = []
         self.loadedPlugins    = []
         self.commandsByPlugin = {}
+        self.databasefile     = 'users.db'
         #
         self.curr_channel     = None
 
@@ -133,6 +135,12 @@ class IRCBot:
         '''
         return self.authpassword
 
+    def setDatabaseFile(self, databasefile):
+        self.databasefile = databasefile
+
+    def getDatabaseFile(self):
+        return self.databasefile
+
     # functions
     def connect(self):
         '''
@@ -202,9 +210,9 @@ class IRCBot:
             print(msg)
 
     # commands
-    def addCommand(self, trigger, function, helpstring, plugin):
+    def addCommand(self, trigger, function, helpstring, plugin, permissionlvl):
         if not trigger in self.commands:
-            self.commands[trigger.lower()] = [function, helpstring, plugin]
+            self.commands[trigger.lower()] = [function, helpstring, plugin, permissionlvl]
             if plugin in self.commandsByPlugin:
                 self.commandsByPlugin[plugin].append(trigger)
             else:
@@ -212,13 +220,21 @@ class IRCBot:
 
     def gotCommand(self, command, sender, args):
         if command.lower() in self.commands:
-            try:
-                self.commands[command][0](sender, args)
-                self.debug('Executed %s!' % self.commands[command][0], 2)
-            except IndexError:
-                self.sendNotice('Too less arguments! Try %shelp %s for further information!' % (self.getCall(), command), sender)
-            #except:
-                #self.sendNotice('There was an error while executing your command!', sender)
+            senderlvl = self.getUserLevel(sender)
+            neededlvl = self.commands[command][3]
+            if senderlvl == None:
+                self.sendNotice('You are not in the database! Cant get your userlvl!', sender)
+            if senderlvl >= neededlvl:
+                try:
+                    self.commands[command][0](sender, args)
+                    self.debug('Executed %s!' % self.commands[command][0], 2)
+                except IndexError:
+                    self.sendNotice('Too less arguments! Try %shelp %s for further information!' % (self.getCall(), command), sender)
+                #except:
+                    #self.sendNotice('There was an error while executing your command!', sender)
+            else:
+                self.sendNotice('No permissions to use this command!', sender)
+                self.sendNotice('You have level %s but you need level %s!' % (senderlvl, neededlvl), sender)
 
     def deleteAllCommands(self):
         self.commands = {}
@@ -287,7 +303,41 @@ class IRCBot:
         self.debug('Finished unloading plugins...', 2)
         self.loadAllPlugins()
         self.debug('Finished loading plugins...', 2)
-        self.debug('Finished reloading plugins!', 2)  
+        self.debug('Finished reloading plugins!', 2)
+
+    # Permission
+    def getUserLevel(self, nick):
+        permissions = self.getPermissionsDict()
+        if nick in permissions:
+            return permissions[nick]
+        else:
+            return None
+
+    def changeUserLevel(self, nick, newuserlvl):
+        self.database_cursor.execute('UPDATE users SET lvl=? WHERE nick=?', (newuserlvl, nick))
+
+    def addUser(self, nick):
+        self.database_cursor.execute('INSERT INTO users VALUES (?, ?)', (str(nick), 0))
+        self.debug('Successfully added "%s" to the database!' % nick, 2)
+
+    def getPermissionsDict(self):
+        mydict = {}
+        rows = self.database_cursor.execute('SELECT * FROM users ORDER BY lvl DESC')
+        for nick, lvl in rows:
+            mydict[nick] = lvl
+        return mydict
+        # read database
+        # return dict {'nick' : permissionlvl} | {'thor77' : 2}s
+        # 2 => admin, 1 => moderator, 0 => none
+
+    def connectDabase(self, databfile):
+        self.database = sqlite3.connect(databfile)
+        self.database_cursor = self.database.cursor()
+        self.database_cursor.execute('CREATE TABLE IF NOT EXISTS users (nick text, lvl integer)')
+
+    def closeDatabase(self):
+        self.database.commit()
+        self.database.close()
 
     # IRC-Functions
     def pong(self, ping):
@@ -363,6 +413,7 @@ class IRCBot:
         time.sleep(1)
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
+        self.closeDatabase()
         sys.exit(0)
 
     def auth(self, nick, password):
@@ -403,14 +454,17 @@ class IRCBot:
         self.connect()
         self.register()
         self.loadAllPlugins()
+        self.connectDabase(self.getDatabaseFile())
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
-
-        for line in self._read():
-            #time.sleep(0.25) # wait
-            self.debug('<<' + line, 2) # debug
-            self._handleLine(line) # handle line
+        try:
+            for line in self._read():
+                #time.sleep(0.25) # wait
+                self.debug('<<' + line, 2) # debug
+                self._handleLine(line) # handle line
+        except KeyboardInterrupt:
+            self.quit()
 
     def _handleLine(self, raw_line):
         # handle lines

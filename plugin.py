@@ -7,8 +7,8 @@ class Plugin:
         if hasattr(self, 'onLoad') and inspect.ismethod(getattr(self, 'onLoad')):
             self.onLoad()
 
-    def addCommand(self, trigger, function, helpstring):
-        self.sock.addCommand(trigger, function, helpstring, self.getName())
+    def addCommand(self, trigger, function, helpstring, permissionlvl=0):
+        self.sock.addCommand(trigger, function, helpstring, self.getName(), permissionlvl)
 
     def sendMessage(self, message, reciever=None):
         self.sock.sendMessage(message, reciever)
