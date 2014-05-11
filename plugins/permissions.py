@@ -16,7 +16,7 @@ class Permissions(Plugin):
         self.sock.addUser(sender)
         permissiondict_new = self.sock.getPermissionsDict()
         if sender in permissiondict_new:
-            self.sendMessage('%s was successfully added to the database!')
+            self.sendMessage('%s was successfully added to the database!' % sender)
         else:
             self.sendNotice('There was an error adding you to the database!', sender)
 
