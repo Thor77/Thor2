@@ -394,7 +394,6 @@ class IRCBot:
         # debug
         self.debug('Joined channel %s!' % chan, 1)
 
-
     def names(self, channel):
         '''
         send names-request to channel

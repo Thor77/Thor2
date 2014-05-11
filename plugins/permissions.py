@@ -8,6 +8,16 @@ class Permissions(Plugin):
         self.addCommand('register', self.register_func, 'add your nick to the database', 0)
         self.addCommand('changeUserLevel', self.changeLevel_func, 'changeUserLevel <nick> <newlvl> | change <nick>s userlvl to <newlvl>', 2)
         self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
+        # events
+        self.registerEvent('onUserJoin', self.onUserJoin)
+
+    def onUserJoin(self, eventobj):
+        joiner = eventobj.getUser()
+        # add user to database
+        userdict = self.sock.getPermissionsDict()
+        if joiner not in userdict:
+            self.addUser(joiner)
+            self.sendNotice('Hi %s! You was automatically added to the databse!', joiner)
 
     def register_func(self, sender, args):
         permissionsdict = self.sock.getPermissionsDict()
