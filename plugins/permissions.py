@@ -18,7 +18,7 @@ class Permissions(Plugin):
         userdict = self.sock.getPermissionsDict()
         if joiner not in userdict:
             self.sock.addUser(joiner)
-            self.sendNotice('Hi %s! You was automatically added to the databse!', joiner)
+            self.sendNotice('Hi %s! You was automatically added to the databse!' % joiner, joiner)
 
     def register_func(self, sender, args):
         permissionsdict = self.sock.getPermissionsDict()
