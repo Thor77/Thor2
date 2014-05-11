@@ -7,7 +7,7 @@ class Permissions(Plugin):
         # commands
         self.addCommand('register', self.register_func, 'add your nick to the database', 0)
         self.addCommand('changeUserLevel', self.changeLevel_func, 'changeUserLevel <nick> <newlvl> | change <nick>s userlvl to <newlvl>', 2)
-        self.addCommand('listUser', self.listusers_func, 'list users in the database', 2)
+        self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
 
     def register_func(self, sender, args):
         permissionsdict = self.sock.getPermissionsDict()
