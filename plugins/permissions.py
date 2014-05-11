@@ -41,4 +41,4 @@ class Permissions(Plugin):
     def listusers_func(self, sender, args):
         usersdict = self.sock.getPermissionsDict()
         for nick in usersdict:
-            self.sendMessage('[{color}08{nick}{color}] => {lvl}'.format(color=self.color_code, nick=nick, lvl=str(usersdict[nick])))
+            self.sendMessage('[{color}08{nick}{color}] => {color}07{lvl}{color}'.format(color=self.color_code, nick=nick, lvl=str(usersdict[nick])))

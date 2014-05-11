@@ -29,7 +29,7 @@ class Help(Plugin):
     def allcommands_func(self, sender, args):
         cmdlist = self.sock.commandsByPlugin
         for plugin in cmdlist:
-            self.sendMessage('[%s08%s%s] => %s' % (self.color_code, plugin, self.color_code, ', '.join(cmdlist[plugin])))
+            self.sendMessage('[%s08%s%s] => %s07%s%s' % (self.color_code, plugin, self.color_code, self.color_code, ', '.join(cmdlist[plugin]), self.color_code))
 
     def commands_func(self, sender, args):
         your_commands = []
