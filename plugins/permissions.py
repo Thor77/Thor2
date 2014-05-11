@@ -42,7 +42,7 @@ class Permissions(Plugin):
                 self.sock.changeUserLevel(nick, newlvl)
                 self.sendMessage('UserLevel of %s successfully changed to %s!' % (nick, newlvl))
         else:
-            self.sendNotice('%s is not yet registered!', sender)
+            self.sendNotice('%s is not yet registered!' % nick, sender)
 
     def myLevel_func(self, sender, args):
         userlvl = self.sock.getUserLevel(sender)
