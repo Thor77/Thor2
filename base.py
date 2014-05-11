@@ -224,6 +224,7 @@ class IRCBot:
             neededlvl = self.commands[command][3]
             if senderlvl == None:
                 self.sendNotice('You are not in the database! Cant get your userlvl!', sender)
+                return
             if senderlvl >= neededlvl:
                 try:
                     self.commands[command][0](sender, args)
