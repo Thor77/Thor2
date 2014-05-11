@@ -330,7 +330,7 @@ class IRCBot:
         # return dict {'nick' : permissionlvl} | {'thor77' : 2}s
         # 2 => admin, 1 => moderator, 0 => none
 
-    def connectDabase(self, databfile):
+    def connectDatabase(self, databfile):
         self.database = sqlite3.connect(databfile)
         self.database_cursor = self.database.cursor()
         self.database_cursor.execute('CREATE TABLE IF NOT EXISTS users (nick text, lvl integer)')
@@ -454,7 +454,7 @@ class IRCBot:
         self.connect()
         self.register()
         self.loadAllPlugins()
-        self.connectDabase(self.getDatabaseFile())
+        self.connectDatabase(self.getDatabaseFile())
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()

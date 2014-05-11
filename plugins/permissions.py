@@ -11,8 +11,9 @@ class Permissions(Plugin):
 
     def register_func(self, sender, args):
         permissionsdict = self.sock.getPermissionsDict()
-        if sender not in permissionsdict:
+        if sender in permissionsdict:
             self.sendNotice('You are alreay registered!', sender)
+            return
         self.sock.addUser(sender)
         permissiondict_new = self.sock.getPermissionsDict()
         if sender in permissiondict_new:
