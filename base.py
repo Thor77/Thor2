@@ -318,10 +318,12 @@ class IRCBot:
 
     def changeUserLevel(self, nick, newuserlvl):
         self.database_cursor.execute('UPDATE users SET lvl=? WHERE nick=?', (newuserlvl, nick))
+        self.safeDatabase()
 
     def addUser(self, nick):
         self.database_cursor.execute('INSERT INTO users VALUES (?, ?)', (str(nick), 0))
         self.debug('Successfully added "%s" to the database!' % nick, 2)
+        self.safeDatabase()
 
     def getPermissionsDict(self):
         mydict = {}
@@ -339,8 +341,11 @@ class IRCBot:
         self.database_cursor.execute('CREATE TABLE IF NOT EXISTS users (nick text, lvl integer)')
 
     def closeDatabase(self):
-        self.database.commit()
+        self.safeDatabase()
         self.database.close()
+
+    def safeDatabase(self):
+        self.database.commit()
 
     # IRC-Functions
     def pong(self, ping):
