@@ -4,10 +4,10 @@ class IRC(Plugin):
 
     def onLoad(self):
         # commands
-        self.addCommand('op', self.op_func, 'op <nick> | give <nick> op rights')
-        self.addCommand('deop', self.deop_func, 'deop <nick> | remove <nick>s op rights')
-        self.addCommand('voice', self.voice_func, 'voice <nick> | allow <nick> to speak')
-        self.addCommand('devoice', self.devoice_func, 'devoice <nick> | deny <nick> to speak')
+        self.addCommand('op', self.op_func, 'op <nick> | give <nick> op rights', 2)
+        self.addCommand('deop', self.deop_func, 'deop <nick> | remove <nick>s op rights', 2)
+        self.addCommand('voice', self.voice_func, 'voice <nick> | allow <nick> to speak', 1)
+        self.addCommand('devoice', self.devoice_func, 'devoice <nick> | deny <nick> to speak', 1)
 
     def op_func(self, sender, args):
         nick = args[0]

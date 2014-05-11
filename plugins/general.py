@@ -3,15 +3,15 @@ from plugin import Plugin
 class General(Plugin):
     def onLoad(self):
         # commands
-        self.addCommand('kick', self.kick_func, 'kick <user> [<reason>] | kick <user> [with <reason>]')
-        self.addCommand('cc', self.cc_func, 'cc <newchan> | part current channel and join <newchan>')
-        self.addCommand('say', self.say_func, 'say <message> | send <message> to the current channel')
-        self.addCommand('reload', self.reload_func, 'Reload plugins')
-        self.addCommand('quit', self.quit_func, 'Disconnect from the server and exit')
-        self.addCommand('setmsgdelay', self.changeMessageDelay_func, 'cdelay <seconds> | change the delay between messages sent by the bot to <seconds>')
-        self.addCommand('showmsgdelay', self.showMessageDelay_func, 'shows the current message-delay')
-        self.addCommand('raw', self.raw_func, 'raw <raw> | sends <raw> to the server')
-        self.addCommand('action', self.action_func, 'action <action> | send action to the current channel')
+        self.addCommand('kick', self.kick_func, 'kick <user> [<reason>] | kick <user> [with <reason>]', 1)
+        self.addCommand('cc', self.cc_func, 'cc <newchan> | part current channel and join <newchan>', 2)
+        self.addCommand('say', self.say_func, 'say <message> | send <message> to the current channel', 1)
+        self.addCommand('reload', self.reload_func, 'Reload plugins', 2)
+        self.addCommand('quit', self.quit_func, 'Disconnect from the server and exit', 2)
+        self.addCommand('setmsgdelay', self.changeMessageDelay_func, 'cdelay <seconds> | change the delay between messages sent by the bot to <seconds>', 2)
+        self.addCommand('showmsgdelay', self.showMessageDelay_func, 'shows the current message-delay', 2)
+        self.addCommand('raw', self.raw_func, 'raw <raw> | sends <raw> to the server', 2)
+        self.addCommand('action', self.action_func, 'action <action> | send action to the current channel', 1)
 
         # events
         self.registerEvent('onUserMessage', self.onMessage)

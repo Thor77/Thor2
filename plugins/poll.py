@@ -3,9 +3,10 @@ from plugin import Plugin
 class Poll(Plugin):
 
     def onLoad(self):
-        self.poll = {} # { optionindex : [ option, votes, [voters] ] }
+        self.poll         = {} # { optionindex : [ option, votes, [voters] ] }
         self.poll_created = False
         self.poll_started = False
+        self.poll_creator = ''
         # commands
         self.addCommand('poll', self.createPoll, 'poll <question> | creates poll with <question>')
         self.addCommand('addoption', self.addOption, 'addoption <option> | adds <option> to the active poll')
@@ -21,10 +22,14 @@ class Poll(Plugin):
         self.poll['question'] = [question, []]
         self.sendNotice('Created poll "%s"!' % question, sender)
         self.poll_created = True
+        self.poll_creator = sender
 
     def addOption(self, sender, args):
         if not self.poll_created:
             self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.bot.call, sender)
+            return
+        elif sender != self.poll_creator:
+            self.sendNotice('You cant edit %ss poll!' % self.poll_creator, sender)
             return
         elif not self.poll_started:
             self.poll_started = True
@@ -83,3 +88,4 @@ class Poll(Plugin):
         self.poll = {}
         self.poll_started = False
         self.poll_created = False
+        self.poll_creator = ''

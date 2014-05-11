@@ -8,8 +8,8 @@ class TheRadioCC(Plugin):
 		self.np_announce = False
 		self.curr_song = None
 		# commands
-		self.addCommand('eannounce', self.eannounce_func, 'enable NP-Announcing')
-		self.addCommand('dannounce', self.dannounce_func, 'disable NP-Announcing')
+		self.addCommand('eannounce', self.eannounce_func, 'enable NP-Announcing', 1)
+		self.addCommand('dannounce', self.dannounce_func, 'disable NP-Announcing', 1)
 		# start timer
 		t = threading.Timer(10, self.announce)
 		t.daemon = True

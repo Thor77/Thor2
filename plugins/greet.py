@@ -5,9 +5,9 @@ class Greet(Plugin):
 	def onLoad(self):
 		self.greet = True
 		# commands
-		self.addCommand('dgreet', self.dgreet_func, 'Disable greeting new users')
-		self.addCommand('egreet', self.egreet_func, 'Enable greeting new users')
-		self.addCommand('gstatus', self.gstatus_func, 'Show the greeting status')
+		self.addCommand('dgreet', self.dgreet_func, 'Disable greeting new users', 1)
+		self.addCommand('egreet', self.egreet_func, 'Enable greeting new users', 2)
+		self.addCommand('gstatus', self.gstatus_func, 'Show the greeting status', 1)
 		# events
 		self.registerEvent('onUserJoin', self.onUserJoin)
 		self.registerEvent('onSelfJoin', self.onSelfJoin)
