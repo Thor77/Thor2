@@ -19,8 +19,8 @@ class Help(Plugin):
             # help for specific commands
             cmdlist = self.sock.commands
             if args[0].lower() in cmdlist:
-                cmdhelp = cmdlist[args[0]][1]
-                self.sendNotice('Help for %s: %s' % (args[0], cmdhelp), sender)
+                cmdhelp = cmdlist[args[0].lower()][1]
+                self.sendNotice('Help for %s: %s' % (args[0].lower(), cmdhelp), sender)
             else:
                 self.sendNotice('No command with name %s!' % args[0].lower(), sender)
         else:
