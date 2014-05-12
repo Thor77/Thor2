@@ -224,10 +224,9 @@ class IRCBot:
             senderlvl = self.getUserLevel(sender)
             neededlvl = self.commands[command][3]
             if senderlvl == None:
-                if command != 'register':
-                    self.sendNotice('You are not in the database! Cant get your userlvl! You can only use the register-command!', sender)
+                self.sendNotice('You are not in the database! Cant get your userlvl! You can only use the register-command!', sender)
                 senderlvl = -1
-            if command == 'register' or senderlvl >= neededlvl:
+            if senderlvl >= neededlvl:
                 try:
                     self.commands[command][0](sender, args)
                     self.debug('Executed %s!' % self.commands[command][0], 2)

@@ -5,7 +5,7 @@ class Permissions(Plugin):
     def onLoad(self):
         self.color_code = str('\003')
         # commands
-        self.addCommand('register', self.register_func, 'add your nick to the database', 0)
+        self.addCommand('register', self.register_func, 'add your nick to the database', -1)
         self.addCommand('changeUserLevel', self.changeLevel_func, 'changeUserLevel <nick> <newlvl> | change <nick>s userlvl to <newlvl>', 2)
         self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
         self.addCommand('mylevel', self.myLevel_func, 'show your permissions-lvl')
