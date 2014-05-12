@@ -18,6 +18,9 @@ class Poll(Plugin):
         if self.poll_started:
             self.sendNotice('Theres already an active poll, type %sshowpoll to see it!' % self.sock.getCall() ,sender)
             return
+        if len(args) == 0:
+            self.sendNotice('To less arguments! Try %shelp poll!' % self.sock.getCall(), sender)
+            return
         question = ' '.join(args)
         self.poll['question'] = [question, []]
         self.sendNotice('Created poll "%s"!' % question, sender)
