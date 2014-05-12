@@ -13,7 +13,7 @@ if len(sys.argv) == 4:
     print('NewLevel: %s' % newlvl)
 
     while True:
-        resume = str('Continue? [y/n]')
+        resume = str(input('Continue? [y/n]'))
         if resume == 'y':
             db = sqlite3.connect(dbfile)
             dbcursor = db.cursor()
