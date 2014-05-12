@@ -336,6 +336,10 @@ class IRCBot:
         # return dict {'nick' : permissionlvl} | {'thor77' : 2}s
         # 2 => admin, 1 => moderator, 0 => none
 
+    def deleteUser(self, nick):
+        self.database_cursor.execute('DELETE FROM users WHERE nick=?', nick.lower())
+        self.safeDatabase()
+
     def connectDatabase(self, databfile):
         self.database = sqlite3.connect(databfile)
         self.database_cursor = self.database.cursor()

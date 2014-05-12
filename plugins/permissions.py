@@ -9,6 +9,7 @@ class Permissions(Plugin):
         self.addCommand('changeUserLevel', self.changeLevel_func, 'changeUserLevel <nick> <newlvl> | change <nick>s userlvl to <newlvl>', 2)
         self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
         self.addCommand('mylevel', self.myLevel_func, 'show your permissions-lvl')
+        self.addCommand('deleteUser', self.deleteUser_func, 'deleteUser <nick> | remove <nick>', 2)
         # events
         self.registerEvent('onUserJoin', self.onUserJoin)
 
@@ -18,7 +19,7 @@ class Permissions(Plugin):
         userdict = self.sock.getPermissionsDict()
         if joiner not in userdict:
             self.sock.addUser(joiner)
-            self.sendNotice('Hi %s! You was automatically added to the databse!' % joiner, joiner)
+            self.sendNotice('Hi %s! You\'ve been automatically added to the databse!' % joiner, joiner)
 
     def register_func(self, sender, args):
         permissionsdict = self.sock.getPermissionsDict()
@@ -53,3 +54,8 @@ class Permissions(Plugin):
         usersdict = self.sock.getPermissionsDict()
         for nick in usersdict:
             self.sendMessage('[{color}15{nick}{color}] => {color}03{lvl}{color}'.format(color=self.color_code, nick=nick, lvl=str(usersdict[nick])))
+
+    def deleteUser_func(self, sender, args):
+        nick = args[0]
+        self.sock.deleteUser(nick)
+        self.sendMessage('Successfully ')
