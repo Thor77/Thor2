@@ -4,9 +4,9 @@ import sys
 # args
 if len(sys.argv) == 4:
 
-    dbfile = sys.argv[1]
-    nick = sys.argv[2]
-    newlvl = sys.argv[3]
+    dbfile = str(sys.argv[1])
+    nick = str(sys.argv[2])
+    newlvl = int(sys.argv[3])
 
     print('DatabaseFile: %s' % dbfile)
     print('Nick: %s' % nick)
