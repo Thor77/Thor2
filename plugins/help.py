@@ -32,14 +32,17 @@ class Help(Plugin):
             self.sendMessage('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(cmdlist[plugin])))
 
     def commands_func(self, sender, args):
-        your_commands = {}
+        plugins = {}
         nick_lvl = self.sock.getUserLevel(sender)
         for trigger in self.sock.commands:
             if self.sock.commands[trigger][3] <= nick_lvl:
                 plugin = self.sock.commands[trigger][2]
-                your_commands[plugin] = trigger
-        for plugin in your_commands:
-            self.sendNotice('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(your_commands[plugin])), sender)
+                if plugin in plugins:
+                    plugins[plugin].append(trigger)
+                else:
+                    plugins[plugin] = [trigger]
+        for plugin in plugins:
+            self.sendNotice('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(plugins[plugin])), sender)
 
     def info_func(self, sender, args):
         self.sendMessage('Creator => {color}03Thor77{color}'.format(color=self.color_code))

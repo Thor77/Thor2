@@ -220,6 +220,7 @@ class IRCBot:
 
     def gotCommand(self, command, sender, args):
         command = command.lower()
+        sender = sender.lower()
         if command in self.commands:
             senderlvl = self.getUserLevel(sender)
             neededlvl = self.commands[command][3]
@@ -320,7 +321,7 @@ class IRCBot:
         self.safeDatabase()
 
     def addUser(self, nick):
-        self.database_cursor.execute('INSERT INTO users VALUES (?, ?)', (str(nick), 0))
+        self.database_cursor.execute('INSERT INTO users VALUES (?, ?)', (str(nick).lower(), 0))
         self.debug('Successfully added "%s" to the database!' % nick, 2)
         self.safeDatabase()
 
