@@ -18,6 +18,7 @@ if len(sys.argv) == 4:
             db = sqlite3.connect(dbfile)
             dbcursor = db.cursor()
             dbcursor.execute('UPDATE users SET lvl=? WHERE nick=?', (newlvl, nick))
+            db.commit()
             print('Success!')
             break
         elif resume == 'n':
