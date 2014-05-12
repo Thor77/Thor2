@@ -18,11 +18,11 @@ class Help(Plugin):
         elif len(args) == 1:
             # help for specific commands
             cmdlist = self.sock.commands
-            if args[0] in cmdlist:
+            if args[0].lower() in cmdlist:
                 cmdhelp = cmdlist[args[0]][1]
                 self.sendNotice('Help for %s: %s' % (args[0], cmdhelp), sender)
             else:
-                self.sendNotice('No command with name %s!' % args[0], sender)
+                self.sendNotice('No command with name %s!' % args[0].lower(), sender)
         else:
             self.sendNotice('Too much arguments! Try "%shelp help" to get more information about this command!' % self.sock.call, sender)
 
