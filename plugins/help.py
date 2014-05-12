@@ -29,22 +29,24 @@ class Help(Plugin):
     def allcommands_func(self, sender, args):
         cmdlist = self.sock.commandsByPlugin
         for plugin in cmdlist:
-            self.sendMessage('[%s08%s%s] => %s07%s%s' % (self.color_code, plugin, self.color_code, self.color_code, ', '.join(cmdlist[plugin]), self.color_code))
+            self.sendMessage('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(cmdlist[plugin])))
 
     def commands_func(self, sender, args):
-        your_commands = []
+        your_commands = {}
         nick_lvl = self.sock.getUserLevel(sender)
         for trigger in self.sock.commands:
             if self.sock.commands[trigger][3] <= nick_lvl:
-                your_commands.append(trigger)
-        self.sendNotice('Commands: %s' % ', '.join(your_commands), sender)
+                plugin = self.sock.commands[trigger][2]
+                your_commands[plugin] = trigger
+        for plugin in your_commands:
+            self.sendNotice('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(your_commands[plugin])), sender)
 
     def info_func(self, sender, args):
-        self.sendMessage('Creator => {color}07Thor77{color}'.format(color=self.color_code))
-        self.sendMessage('Helper => {color}07Butt4cak3{color}'.format(color=self.color_code))
-        self.sendMessage('Github => {color}07https://github.com/Thor77/Thor2{color}'.format(color=self.color_code))
-        self.sendMessage('Commandlist => {color}07{call}commands{color}'.format(color=self.color_code, call=self.sock.call))
-        self.sendMessage('Pluginlist => {color}07{call}plugins{color}'.format(color=self.color_code, call=self.sock.call))
+        self.sendMessage('Creator => {color}03Thor77{color}'.format(color=self.color_code))
+        self.sendMessage('Helper => {color}03Butt4cak3{color}'.format(color=self.color_code))
+        self.sendMessage('Github => {color}03https://github.com/Thor77/Thor2{color}'.format(color=self.color_code))
+        self.sendMessage('Commandlist => {color}03{call}commands{color}'.format(color=self.color_code, call=self.sock.call))
+        self.sendMessage('Pluginlist => {color}03{call}plugins{color}'.format(color=self.color_code, call=self.sock.call))
 
     def plugins_func(self, sender, args):
         self.sendMessage('Loaded Plugins => {color}07{pluginlist}{color}'.format(color=self.color_code, pluginlist=', '.join(self.sock.loadedPlugins)))
