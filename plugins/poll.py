@@ -16,7 +16,7 @@ class Poll(Plugin):
 
     def createPoll(self, sender, args):
         if self.poll_started:
-            self.sendNotice('Theres already an active poll, type %sshowpoll to see it!' % self.bot.call ,sender)
+            self.sendNotice('Theres already an active poll, type %sshowpoll to see it!' % self.sock.getCall() ,sender)
             return
         question = ' '.join(args)
         self.poll['question'] = [question, []]
@@ -26,7 +26,7 @@ class Poll(Plugin):
 
     def addOption(self, sender, args):
         if not self.poll_created:
-            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.bot.call, sender)
+            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.sock.getCall(), sender)
             return
         elif sender != self.poll_creator:
             self.sendNotice('You cant edit %ss poll!' % self.poll_creator, sender)
@@ -40,7 +40,7 @@ class Poll(Plugin):
 
     def showPoll(self, sender, args):
         if not self.poll_started:
-            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.bot.call, sender)
+            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.sock.getCall(), sender)
             return
         self.sendMessage('Question: ' + self.poll['question'][0])
         print(self.poll)
@@ -53,7 +53,7 @@ class Poll(Plugin):
 
     def vote(self, sender, args):
         if not self.poll_started:
-            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.bot.call, sender)
+            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.sock.getCall(), sender)
             return
         number = args[0]
         if number in self.poll:
@@ -65,11 +65,11 @@ class Poll(Plugin):
             else:
                 self.sendNotice('You already voted!', sender)
         else:
-            self.sendNotice('Invalid optionnumber! Try "%sshowpoll" for a list of options!' % self.bot.call, sender)
+            self.sendNotice('Invalid optionnumber! Try "%sshowpoll" for a list of options!' % self.sock.getCall(), sender)
 
     def endPoll(self, sender, args):
         if not self.poll_started:
-            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.bot.call, sender)
+            self.sendNotice('No active poll! Create poll first! Try "%shelp poll"' % self.sock.getCall(), sender)
             return
         heighest = [0, '']
         votes = 0
