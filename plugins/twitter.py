@@ -9,7 +9,7 @@ class Twitter(Plugin):
         self.enabled    = False
         self.hashtag    = '#esc'
         self.lastTweet  = None
-        self.startdelay = 60
+        self.startdelay = 20
         consumer_key    = 'kzrUWTG08A5aIjO6IJjuA'
         consumer_secret = '5ivJzkNJGrrSmq6FliYKfZiZIpXROoU9SH5neO52ebw'
         access_key      = '2338381512-c1y1OR6ClMt24NaENdJqZuNCZtO4VqA9MqQdQuf'
