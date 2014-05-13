@@ -7,4 +7,4 @@ TODO
 ====
 - unload Plugins through a command
 - load Plugins through a command
-- Permission System
+- Permission System | DONE
