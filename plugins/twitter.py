@@ -9,6 +9,7 @@ class Twitter(Plugin):
         self.enabled    = False
         self.hashtag    = '#esc'
         self.lastTweet  = None
+        self.startdelay = 60
         consumer_key    = 'kzrUWTG08A5aIjO6IJjuA'
         consumer_secret = '5ivJzkNJGrrSmq6FliYKfZiZIpXROoU9SH5neO52ebw'
         access_key      = '2338381512-c1y1OR6ClMt24NaENdJqZuNCZtO4VqA9MqQdQuf'
@@ -22,8 +23,11 @@ class Twitter(Plugin):
         self.addCommand('setDelay', self.setDelay_func, 'setDelay <delay> | set delay between messages')
         self.addCommand('showDelay', self.showDelay_func, 'show the delay')
         # init Thread
+        self.resetThread()
+
+    def resetThread(self):
         self.stopFlag = Event()
-        self.thread = MyThread(self.stopFlag, self.sendTweet, 60)
+        self.thread = MyThread(self.stopFlag, self.sendTweet, self.startdelay)
 
     def enableTwitter_func(self, sender, args):
         if self.enabled:
@@ -39,6 +43,7 @@ class Twitter(Plugin):
             return
         self.enabled = False
         self.stopFlag.set()
+        self.resetThread()
         self.sendNotice('Disabled!', sender)
 
     def setDelay_func(self, sender, args):
