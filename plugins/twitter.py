@@ -70,6 +70,7 @@ class MyThread(Thread):
     def run(self):
         while not self.stopped.wait(self.delay):
             self.function()
+            print('Executed function!')
 
     def changeDelay(self, newdelay):
         self.delay = newdelay
