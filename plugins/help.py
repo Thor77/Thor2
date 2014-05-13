@@ -33,7 +33,7 @@ class Help(Plugin):
         # build commandlist
         for plugin in cmdlistbyplugins:
             for cmd in cmdlistbyplugins[plugin]:
-                cmdlistbyplugins[plugin] += '[%s]' % commandsdict[cmd.lower()][3]
+                cmdlistbyplugins[cmd] += '[%s]' % commandsdict[cmd.lower()][3]
             self.sendMessage('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(cmdlistbyplugins[plugin])))
 
     def commands_func(self, sender, args):
