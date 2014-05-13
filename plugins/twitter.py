@@ -7,7 +7,7 @@ class Twitter(Plugin):
 
     def onLoad(self):
         self.enabled    = False
-        self.hashtag    = '#esc'
+        self.search    = 'WhatsApp'
         self.lastTweet  = None
         self.startdelay = 20
         consumer_key    = 'kzrUWTG08A5aIjO6IJjuA'
