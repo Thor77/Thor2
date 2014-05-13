@@ -38,7 +38,7 @@ class Twitter(Plugin):
             self.sendNotice('Already disabled!', sender)
             return
         self.enabled = False
-        self.thread.stop()
+        self.stopFlag.set()
         self.sendNotice('Disabled!', sender)
 
     def setDelay_func(self, sender, args):
