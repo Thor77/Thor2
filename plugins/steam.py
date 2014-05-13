@@ -10,10 +10,10 @@ class Steam(Plugin):
         self.color_code = str('\003')
         # commands
         if requests_available:
-            self.addCommand('steamplayers', self.steamPlayers_func, 'shows count of currently online players on steam', 1)
-            self.addCommand('steamstatus', self.steamStatus_func, 'shows the status of steam services', 1)
-            self.addCommand('dotamm', self.dotaPlayer_func, 'shows the count of players currently in Dota 2 Matchmaking', 1)
-            self.addCommand('dotammtime', self.dotaMMTime_func, 'shows the average waiting time in the Dota 2 Matchmaking', 1)
+            self.addCommand('steamplayers', self.steamPlayers_func, 'shows count of currently online players on steam')
+            self.addCommand('steamstatus', self.steamStatus_func, 'shows the status of steam services')
+            self.addCommand('dotamm', self.dotaPlayer_func, 'shows the count of players currently in Dota 2 Matchmaking')
+            self.addCommand('dotammtime', self.dotaMMTime_func, 'shows the average waiting time in the Dota 2 Matchmaking')
             self.addCommand('steamall', self.steamAll_func, 'shows all informations about steam')
 
     def steamPlayers_func(self, sender, args):
