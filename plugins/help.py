@@ -21,14 +21,19 @@ class Help(Plugin):
             if args[0].lower() in cmdlist:
                 cmdhelp = cmdlist[args[0].lower()][1]
                 self.sendNotice('Help for %s: %s' % (args[0].lower(), cmdhelp), sender)
+                self.sendNotice('You need at least level %s to use this command!' % cmdlist[args[0].lower()][3],sender)
             else:
                 self.sendNotice('No command with name %s!' % args[0].lower(), sender)
         else:
             self.sendNotice('Too much arguments! Try "%shelp help" to get more information about this command!' % self.sock.call, sender)
 
     def allcommands_func(self, sender, args):
-        cmdlist = self.sock.commandsByPlugin
-        for plugin in cmdlist:
+        commandsdict = self.sock.commands
+        cmdlistbyplugins = self.sock.commandsByPlugin
+        # build commandlist
+        for plugin in cmdlistbyplugins:
+            for cmd in cmdlistbyplugins[plugin]:
+                cmdlistbyplugins[plugin] += '[%s]' % commandsdict[cmd.lower()][3]
             self.sendMessage('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(cmdlist[plugin])))
 
     def commands_func(self, sender, args):
@@ -52,4 +57,4 @@ class Help(Plugin):
         self.sendMessage('{color}15Pluginlist{color} => {color}03{call}plugins{color}'.format(color=self.color_code, call=self.sock.call))
 
     def plugins_func(self, sender, args):
-        self.sendMessage('Loaded Plugins => {color}07{pluginlist}{color}'.format(color=self.color_code, pluginlist=', '.join(self.sock.loadedPlugins)))
+        self.sendMessage('Loaded Plugins => {color}03{pluginlist}{color}'.format(color=self.color_code, pluginlist=', '.join(self.sock.loadedPlugins)))
