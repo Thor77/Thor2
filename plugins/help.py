@@ -32,8 +32,8 @@ class Help(Plugin):
         cmdlistbyplugins = self.sock.commandsByPlugin
         # build commandlist
         for plugin in cmdlistbyplugins:
-            for cmd in cmdlistbyplugins[plugin]:
-                cmd += '[%s]' % commandsdict[cmd.lower()][3]
+            for index, cmd in enumerate(cmdlistbyplugins[plugin]):
+                cmdlistbyplugins[plugin][index] += '[%s]' % commandsdict[cmd.lower()][3]
             self.sendMessage('[{color}15{plugin}{color}] => {color}03{commands}{color}'.format(color=self.color_code, plugin=plugin, commands=', '.join(cmdlistbyplugins[plugin])))
 
     def commands_func(self, sender, args):
