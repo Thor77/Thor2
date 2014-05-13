@@ -10,7 +10,7 @@ class Permissions(Plugin):
         self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
         self.addCommand('mylevel', self.myLevel_func, 'show your permissions-lvl')
         self.addCommand('deleteUser', self.deleteUser_func, 'deleteUser <nick> | remove <nick>', 2)
-        self.addCommand('adduser', self.addUser_func, 'addUser <nick> | add <nick> to the database')
+        self.addCommand('adduser', self.addUser_func, 'addUser <nick> | add <nick> to the database', 1)
         # events
         self.registerEvent('onUserJoin', self.onUserJoin)
 
