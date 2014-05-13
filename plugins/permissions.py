@@ -10,6 +10,7 @@ class Permissions(Plugin):
         self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
         self.addCommand('mylevel', self.myLevel_func, 'show your permissions-lvl')
         self.addCommand('deleteUser', self.deleteUser_func, 'deleteUser <nick> | remove <nick>', 2)
+        self.addCommand('adduser', self.addUser_func, 'addUser <nick> | add <nick> to the database')
         # events
         self.registerEvent('onUserJoin', self.onUserJoin)
 
@@ -29,6 +30,19 @@ class Permissions(Plugin):
         self.sock.addUser(sender)
         permissiondict_new = self.sock.getPermissionsDict()
         if sender in permissiondict_new:
+            self.sendMessage('%s was successfully added to the database!' % sender)
+        else:
+            self.sendNotice('There was an error adding you to the database!', sender)
+
+    def addUser_func(self, sender, args):
+        nick = args[0]
+        permissionsdict = self.sock.getPermissionsDict()
+        if nick in permissionsdict:
+            self.sendNotice('You are alreay registered!', sender)
+            return
+        self.sock.addUser(nick)
+        permissiondict_new = self.sock.getPermissionsDict()
+        if nick in permissiondict_new:
             self.sendMessage('%s was successfully added to the database!' % sender)
         else:
             self.sendNotice('There was an error adding you to the database!', sender)
