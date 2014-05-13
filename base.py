@@ -470,17 +470,17 @@ class IRCBot:
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
-        try:
             for line in self._read():
-                #time.sleep(0.25) # wait
-                self.debug('<<' + line, 2) # debug
-                self._handleLine(line) # handle line
-        except KeyboardInterrupt:
-            self.quit()
-        except Exception as e:
-            exception = '%s: %s' % (e.__class__.__name__, e.args[0])
-            self.debug(exception, 1)
-            self.sendMessage('ERROR: %s' % exception)
+                try:
+                    #time.sleep(0.25) # wait
+                    self.debug('<<' + line, 2) # debug
+                    self._handleLine(line) # handle line
+                except KeyboardInterrupt:
+                    self.quit()
+                except Exception as e:
+                    exception = '%s: %s' % (e.__class__.__name__, e.args[0])
+                    self.debug(exception, 1)
+                    self.sendMessage('ERROR: %s' % exception)
 
     def _handleLine(self, raw_line):
         # handle lines
