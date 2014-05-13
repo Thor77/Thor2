@@ -29,6 +29,7 @@ class Twitter(Plugin):
         if self.enabled:
             self.sendNotice('Already enabled!', sender)
             return
+        self.enabled = True
         self.sendNotice('Enabled!', sender)
         self.thread.start()
 
