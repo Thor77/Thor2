@@ -422,6 +422,7 @@ class IRCBot:
         self._send('WHOIS %s' % nick)
 
     def quit(self, quitmsg='Bye!'):
+        self.unloadPlugins()
         self.debug('Exit now!', 1)
         self._send('QUIT :%s' % quitmsg)
         time.sleep(1)

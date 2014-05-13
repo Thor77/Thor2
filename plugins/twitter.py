@@ -67,6 +67,9 @@ class Twitter(Plugin):
             self.lastTweet = tweet
             self.sendMessage(tweet)
 
+    def onUnload(self):
+        self.stopFlag.set()
+
 class MyThread(Thread):
     def __init__(self, event, function, delay):
         Thread.__init__(self)

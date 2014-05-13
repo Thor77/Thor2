@@ -28,6 +28,8 @@ class Plugin:
 
     def unload(self):
         self.debug('Plugin %s unloaded!' % self.getName(), 2)
+        if hasattr(self, 'onUnload') and inspect.ismethod(getattr(self, 'onUnload')):
+            self.onUnload()
 
     def getName(self):
         return self.__class__.__name__
