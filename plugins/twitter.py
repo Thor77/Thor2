@@ -18,8 +18,8 @@ class Twitter(Plugin):
         # commands
         self.addCommand('eTwitter', self.enableTwitter_func, 'enable Twitter-Tweet-sending')
         self.addCommand('dTwitter', self.disableTwitter_func, 'disable Twitter-Tweet-sending')
-        self.addCommand('setHashtag', self.setHashtag_func, 'setHashtag <hashtag> | set hashtag to get reulsts from')
-        self.addCommand('showHashtag', self.showHashtag_func, 'show the current hashtag')
+        self.addCommand('setSearch', self.setSearch_func, 'setSearch <searchstring> | set search to get reulsts from')
+        self.addCommand('showSearch', self.showSearch_func, 'show the current searchstring')
         self.addCommand('setDelay', self.setDelay_func, 'setDelay <delay> | set delay between messages')
         self.addCommand('showDelay', self.showDelay_func, 'show the delay')
         # init Thread
@@ -51,18 +51,18 @@ class Twitter(Plugin):
         self.thread.changeDelay(newdelay)
         self.sendNotice('Delay set to %s!' % newdelay, sender)
 
-    def setHashtag_func(self, sender, args):
-        self.hashtag = '#' + args[0]
-        self.sendNotice('Hashtag set to %s!' % self.hashtag, sender)
+    def setSearch_func(self, sender, args):
+        self.search = args[0]
+        self.sendNotice('Searchstring set to %s!' % self.search, sender)
 
-    def showHashtag_func(self, sender, args):
-        self.sendMessage('Current Hashtag: %s' % self.hashtag)
+    def showSearch_func(self, sender, args):
+        self.sendMessage('Current Searchstring: %s' % self.search)
 
     def showDelay_func(self, sender, args):
         self.sendMessage('Current delay: %s' % self.thread.getDelay())
 
     def sendTweet(self):
-        tweet = self.t.search(q=self.hashtag, result_type='recent')['statuses'][0]['text']
+        tweet = self.t.search(q=self.search, result_type='recent')['statuses'][0]['text']
         if tweet != self.lastTweet:
             self.lastTweet = tweet
             self.sendMessage(tweet)
