@@ -54,7 +54,7 @@ class Permissions(Plugin):
         usersdict = self.sock.getPermissionsDict()
         userlist = []
         for nick in usersdict:
-            userlist.append('{color}15{nick}{color} [{color}03{lvl}{color}]'.format(color=self.color_code, nick=nick, lvl=str(usersdict[nick + 'ERROR'])))
+            userlist.append('{color}15{nick}{color} [{color}03{lvl}{color}]'.format(color=self.color_code, nick=nick, lvl=str(usersdict[nick])))
         self.sendNotice(', '.join(userlist), sender)
 
     def deleteUser_func(self, sender, args):
