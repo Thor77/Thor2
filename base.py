@@ -234,8 +234,10 @@ class IRCBot:
                     self.debug('Executed %s!' % self.commands[command][0], 2)
                 except IndexError:
                     self.sendNotice('Too less arguments! Try %shelp %s for further information!' % (self.getCall(), command), sender)
-                #except:
-                    #self.sendNotice('There was an error while executing your command!', sender)
+                except Exception as e:
+                    exception = '%s: %s' % (e.__class__.__name__, e.args[0])
+                    self.debug(exception, 1)
+                    self.sendMessage('ERROR: %s' % exception)
             else:
                 self.sendNotice('No permissions to use this command!', sender)
                 self.sendNotice('You have level %s but you need level %s!' % (senderlvl, neededlvl), sender)
@@ -470,17 +472,13 @@ class IRCBot:
         if self.getCall() == None:
             self.debug('ERROR: No call set!', 1)
             sys.exit()
+        try:
             for line in self._read():
-                try:
                     #time.sleep(0.25) # wait
                     self.debug('<<' + line, 2) # debug
                     self._handleLine(line) # handle line
-                except KeyboardInterrupt:
-                    self.quit()
-                except Exception as e:
-                    exception = '%s: %s' % (e.__class__.__name__, e.args[0])
-                    self.debug(exception, 1)
-                    self.sendMessage('ERROR: %s' % exception)
+        except KeyboardInterrupt:
+            self.quit()
 
     def _handleLine(self, raw_line):
         # handle lines
