@@ -37,6 +37,7 @@ class Twitter(Plugin):
         if not self.enabled:
             self.sendNotice('Already disabled!', sender)
             return
+        self.enabled = False
         self.thread.stop()
         self.sendNotice('Disabled!', sender)
 
