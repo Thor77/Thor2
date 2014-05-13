@@ -34,7 +34,7 @@ class Permissions(Plugin):
             self.sendNotice('There was an error adding you to the database!', sender)
 
     def changeLevel_func(self, sender, args):
-        nick = args[0]
+        nick = args[0].lower()
         newlvl = int(args[1])
         userdict = self.sock.getPermissionsDict()
         if nick in userdict:
@@ -47,7 +47,7 @@ class Permissions(Plugin):
             self.sendNotice('%s is not yet registered!' % nick, sender)
 
     def myLevel_func(self, sender, args):
-        userlvl = self.sock.getUserLevel(sender)
+        userlvl = self.sock.getUserLevel(sender.lower())
         self.sendNotice('Your userlevel is %s!' % userlvl, sender)
 
     def listusers_func(self, sender, args):
@@ -58,6 +58,6 @@ class Permissions(Plugin):
         self.sendNotice(', '.join(userlist), sender)
 
     def deleteUser_func(self, sender, args):
-        nick = args[0]
+        nick = args[0].lower()
         self.sock.deleteUser(nick)
         self.sendMessage('Successfully removed %s from the database!' % nick)
