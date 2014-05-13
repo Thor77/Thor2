@@ -1,12 +1,12 @@
 from plugin import Plugin
 from twython import Twython
-import threading
+from threading import Thread
+from threading import Event
 
 class Twitter(Plugin):
 
     def onLoad(self):
         self.enabled    = False
-        self.delay      = 60
         self.hashtag    = '#esc'
         self.lastTweet  = None
         consumer_key    = 'kzrUWTG08A5aIjO6IJjuA'
@@ -21,19 +21,27 @@ class Twitter(Plugin):
         self.addCommand('showHashtag', self.showHashtag_func, 'show the current hashtag')
         self.addCommand('setDelay', self.setDelay_func, 'setDelay <delay> | set delay between messages')
         self.addCommand('showDelay', self.showDelay_func, 'show the delay')
+        # init Thread
+        self.stopFlag = Event()
+        self.thread = MyThread(self.stopFlag, self.sendTweet, 60)
 
     def enableTwitter_func(self, sender, args):
-        self.enabled = True
+        if self.enabled:
+            self.sendNotice('Already enabled!', sender)
+            return
         self.sendNotice('Enabled!', sender)
-        self.sendTweet()
+        self.thread.start()
 
     def disableTwitter_func(self, sender, args):
-        self.enabled = False
+        if not self.enabled:
+            self.sendNotice('Already disabled!', sender)
+            return
+        self.thread.stop()
         self.sendNotice('Disabled!', sender)
 
     def setDelay_func(self, sender, args):
-        newdelay = args[0]
-        self.delay = int(newdelay)
+        newdelay = int(args[0])
+        self.thread.changeDelay(newdelay)
         self.sendNotice('Delay set to %s!' % newdelay, sender)
 
     def setHashtag_func(self, sender, args):
@@ -44,12 +52,27 @@ class Twitter(Plugin):
         self.sendMessage('Current Hashtag: %s' % self.hashtag)
 
     def showDelay_func(self, sender, args):
-        self.sendMessage('Current delay: %s' % self.delay)
+        self.sendMessage('Current delay: %s' % self.thread.getDelay())
 
     def sendTweet(self):
         tweet = self.t.search(q=self.hashtag, result_type='recent')['statuses'][0]['text']
         if tweet != self.lastTweet:
             self.lastTweet = tweet
             self.sendMessage(tweet)
-            if self.enabled:
-                threading.Timer(self.delay, self.sendTweet).start()
+
+class MyThread(Thread):
+    def __init__(self, event, function, delay):
+        Thread.__init__(self)
+        self.stopped = event
+        self.function = function
+        self.delay = delay
+
+    def run(self):
+        while not self.stopped.wait(self.delay):
+            self.function()
+
+    def changeDelay(self, newdelay):
+        self.delay = newdelay
+
+    def getDelay(self):
+        return self.delay
