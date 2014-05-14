@@ -72,6 +72,6 @@ class Permissions(Plugin):
         self.sendNotice(', '.join(userlist), sender)
 
     def deleteUser_func(self, sender, args):
-        nick = args[0].lower()
+        nick = args[0]
         self.sock.deleteUser(nick)
         self.sendMessage('Successfully removed %s from the database!' % nick)
