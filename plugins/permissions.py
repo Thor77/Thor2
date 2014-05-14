@@ -15,10 +15,10 @@ class Permissions(Plugin):
         self.registerEvent('onUserJoin', self.onUserJoin)
 
     def onUserJoin(self, eventobj):
-        joiner = (eventobj.getUser()).lower()
+        joiner = eventobj.getUser()
         # add user to database
         userdict = self.sock.getPermissionsDict()
-        if joiner not in userdict:
+        if joiner.lower() not in userdict:
             self.sock.addUser(joiner)
             self.sendNotice('Hi %s! You\'ve been automatically added to the databse!' % joiner, joiner)
 

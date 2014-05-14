@@ -37,5 +37,5 @@ class Message(Plugin):
         for d in self.messages[nick]:
             for sender in d:
                 msg = d[sender]
-                self.sendMessage('[{color}08{sender}{color}] => {color}07{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg))
+                self.sendMessage('[{color}15{sender}{color}] => {color}03{nachricht}{color}'.format(color=self.color_code, sender=sender, nachricht=msg))
         del self.messages[nick]
