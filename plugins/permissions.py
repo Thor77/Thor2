@@ -15,7 +15,7 @@ class Permissions(Plugin):
         self.registerEvent('onUserJoin', self.onUserJoin)
 
     def onUserJoin(self, eventobj):
-        joiner = eventobj.getUser()
+        joiner = (eventobj.getUser()).lower()
         # add user to database
         userdict = self.sock.getPermissionsDict()
         if joiner not in userdict:
