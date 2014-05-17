@@ -50,6 +50,10 @@ class TitleFinder(Plugin):
     def getTitle(self, url):
         try:
             soup = BeautifulSoup(urllib.request.urlopen(url))
-            return soup.title.string
+            if soup.find('html') == None:
+                self.debug('TitleFinder: No html!', 1)
+                return None
+            else:
+                return soup.title.string
         except urllib.error.HTTPError as e:
-            self.debug('HTTPError %s while finding title!' % e.code, 1)
+            self.debug('TitleFinder: HTTPError %s while finding title!' % e.code, 1)
