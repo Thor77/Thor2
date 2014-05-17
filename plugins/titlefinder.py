@@ -30,7 +30,8 @@ class TitleFinder(Plugin):
         if len(urls) != 0:
             for url in urls:
                 title = self.getTitle(url)
-                self.sendMessage(title)
+                if title != None:
+                    self.sendMessage('Title: %s' % title)
 
     def eTitleFinder_func(self, sender, args):
         if not self.TitleFinderEnabled:
@@ -49,6 +50,6 @@ class TitleFinder(Plugin):
     def getTitle(self, url):
         try:
             soup = BeautifulSoup(urllib.request.urlopen(url))
-            return 'Title: %s' % soup.title.string
+            return soup.title.string
         except urllib.error.HTTPError as e:
-            return 'HTTPError: %s' % e.code
+            self.debug('HTTPError %s while finding title!' % e.code, 1)
