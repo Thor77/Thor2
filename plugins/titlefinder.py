@@ -18,6 +18,8 @@ class TitleFinder(Plugin):
             self.registerEvent('onUserMessage', self.onMessage)
             #
             self.TitleFinderEnabled = False
+        else:
+            self.debug('TitleFinder plugin not available! Install BeautifulSoup!', 1)
 
     def onMessage(self, eventobj):
         if not self.TitleFinderEnabled:
