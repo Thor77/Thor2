@@ -30,14 +30,14 @@ class Greet(Plugin):
 			self.sendNotice('Greeting already disabled!', sender)
 		else:
 			self.greet = False
-			self.sendMessage('Greeting disabled!')
+			self.sendNotice('Greeting disabled!', sender)
 
 	def egreet_func(self, sender, args):
 		if self.greet:
 			self.sendNotice('Greeting already enabled!', sender)
 		else:
 			self.greet = True
-			self.sendMessage('Greeting enabled!')
+			self.sendNotice('Greeting enabled!', sender)
 
 	def gstatus_func(self, sender, args):
 		if self.greet:
