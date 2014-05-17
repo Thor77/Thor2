@@ -51,4 +51,4 @@ class TitleFinder(Plugin):
             soup = BeautifulSoup(urllib.request.urlopen(url))
             return soup.title.string
         except urllib.error.HTTPError as e:
-            return str(e.code)
+            return 'HTTPError %s' % e.code
