@@ -1,7 +1,8 @@
 from plugin import Plugin
 try:
     from bs4 import BeautifulSoup
-    import urllib.request as urllib2
+    import urllib.request
+    import urllib.error
     import re
     bs_avail = True
 except ImportError:
@@ -46,5 +47,8 @@ class TitleFinder(Plugin):
             self.sendNotice('TitleFinder already disabled!')
 
     def getTitle(self, url):
-        soup = BeautifulSoup(urllib2.urlopen(url))
-        return soup.title.string
+        try:
+            soup = BeautifulSoup(urllib.request.urlopen(url))
+            return soup.title.string
+        except urllib.error.HTTPError as e:
+            return str(e.code)
