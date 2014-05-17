@@ -38,14 +38,14 @@ class TitleFinder(Plugin):
             self.TitleFinderEnabled = True
             self.sendNotice('TitleFinder enabled!', sender)
         else:
-            self.sendNotice('TitleFinder already enabled!')
+            self.sendNotice('TitleFinder already enabled!', sender)
 
     def dTitleFinder_func(self, sender, args):
         if self.TitleFinderEnabled:
             self.TitleFinderEnabled = False
             self.sendNotice('TitleFinder disabled!', sender)
         else:
-            self.sendNotice('TitleFinder already disabled!')
+            self.sendNotice('TitleFinder already disabled!', sender)
 
     def getTitle(self, url):
         try:
