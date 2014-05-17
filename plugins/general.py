@@ -25,9 +25,9 @@ class General(Plugin):
         self.sendMessage(msg)
 
     def reload_func(self, sender, args):
-        self.sendMessage('Reloading...')
+        self.sendNotice('Reloading...', sender)
         self.sock.reloadPlugins()
-        self.sendMessage('Finished reloading!')
+        self.sendNotice('Finished reloading!', sender)
 
     def quit_func(self, sender, args):
         self.sock.quit('%s ist schuld!' % sender)

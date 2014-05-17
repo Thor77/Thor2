@@ -3,7 +3,7 @@ from plugin import Plugin
 class Greet(Plugin):
 
 	def onLoad(self):
-		self.greet = True
+		self.greet = False
 		# commands
 		self.addCommand('dgreet', self.dgreet_func, 'Disable greeting new users', 1)
 		self.addCommand('egreet', self.egreet_func, 'Enable greeting new users', 2)
