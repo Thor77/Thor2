@@ -27,8 +27,9 @@ class TitleFinder(Plugin):
         msg = eventobj.getMessage()
         urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', msg)
         if len(urls) != 0:
-            title = self.getTitle(urls[0])
-            self.sendMessage('Title: %s' % title)
+            for url in urls:
+                title = self.getTitle(url)
+                self.sendMessage('Title: %s' % title)
 
     def eTitleFinder_func(self, sender, args):
         if not self.TitleFinderEnabled:
