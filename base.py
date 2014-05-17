@@ -237,7 +237,7 @@ class IRCBot:
                 except Exception as e:
                     exception = '%s: %s' % (e.__class__.__name__, e.args[0])
                     self.debug(exception, 1)
-                    self.sendMessage('ERROR: %s' % exception)
+                    self.sendNotice('ERROR: %s' % exception, sender)
             else:
                 self.sendNotice('No permissions to use this command!', sender)
                 self.sendNotice('You have level %s but you need level %s!' % (senderlvl, neededlvl), sender)
