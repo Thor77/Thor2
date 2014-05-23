@@ -560,14 +560,12 @@ class IRCBot:
                 user.setNick(newnick)
         elif event == '354':
             #  WHO #channel c%nuhar
-            nick = raw.getTarget()
-            if nick[0] == '~':
-                nick = nick[1:]
-            self.debug('Got information about %s!' % nick, 2)
             information = raw.getMessage().split(' ')
+            nick = information[1]
+            self.debug('Got information about %s!' % nick, 2)
             if self.getUserObject(nick) == None:
                 userobj = User(nick)
-                authname = information[2]
+                authname = information[3]
                 permissionsdict = self.getPermissionsDict()
                 if authname != '0':
                     userobj.setAuthName(authname)
