@@ -158,7 +158,7 @@ class IRCBot:
         '''
         Send line to the server
         '''
-        line = line.replace('\r\n', '')
+        line = line.replace('\n', '')
         self.debug('>>' + line, 2)
         self.sock.send((line + '\r\n').encode())
 
