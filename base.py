@@ -561,7 +561,7 @@ class IRCBot:
         elif event == '354':
             #  WHO #channel c%nuhar
             information = raw.getMessage().split(' ')
-            nick = information[1]
+            nick = information[0]
             self.debug('Got information about %s!' % nick, 2)
             if self.getUserObject(nick) == None:
                 userobj = User(nick)
@@ -572,7 +572,7 @@ class IRCBot:
                     if authname.lower() not in permissionsdict:
                         self.addUser(authname)
                 else:
-                    self.debug('Tried to add %s to the database, but %s is not authed!' % nick, 2)
+                    self.debug('Tried to add %s to the database, but %s is not authed!' % (nick, nick), 2)
             else:
                 self.debug('User %s already in the list!' % nick, 2)
 
