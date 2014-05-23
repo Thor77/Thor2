@@ -49,5 +49,9 @@ class Permissions(Plugin):
 
     def deleteUser_func(self, sender, args):
         nick = args[0]
-        self.sock.deleteUser(nick.lower())
-        self.sendMessage('Successfully removed %s from the database!' % nick)
+        usersdict = self.sock.getPermissionsDict()
+        if nick in usersdict:
+            self.sock.deleteUser(nick.lower())
+            self.sendMessage('Successfully removed %s from the database!' % nick)
+        else:
+            self.sendNotice('%s is not in the database!' % nick, sender)
