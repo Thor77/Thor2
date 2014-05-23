@@ -543,7 +543,7 @@ class IRCBot:
                 self.debug('%s joined your channel!' % (joiner), 1)
                 #
                 self.debug('Will now send NickRequest!', 2)
-                self._send('WHO %s c\%nuhar' % self.getCurrentChannel())
+                self._send('WHO %s c%%nuhar' % self.getCurrentChannel())
         elif event == 'PART' or event == 'QUIT':
             quituser = raw.getSender().split('!')[0]
             if quituser != self.getNick():
