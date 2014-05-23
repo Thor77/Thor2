@@ -229,11 +229,13 @@ class IRCBot:
     def gotCommand(self, command, sender, args):
         command = command.lower()
         sender = sender.lower()
-        authname = self.getUserObject(sender).getAuthName()
+        userobj = self.getUserObject(sender)
         if command in self.commands:
-            if authname == None:
+            if userobj == None:
                 self.sendNotice('You are not in the database! Can\'t get your userlvl!', sender)
                 return
+            else:
+                authname = userobj.getAuthName()
             senderlvl = self.getUserLevel(authname)
             neededlvl = self.commands[command][3]
             if senderlvl >= neededlvl:
