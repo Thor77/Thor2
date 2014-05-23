@@ -229,12 +229,13 @@ class IRCBot:
     def gotCommand(self, command, sender, args):
         command = command.lower()
         sender = sender.lower()
+        authname = self.getUserObject(sender).getAuthName()
         if command in self.commands:
-            senderlvl = self.getUserLevel(sender)
-            neededlvl = self.commands[command][3]
-            if senderlvl == None:
+            if authname == None:
                 self.sendNotice('You are not in the database! Can\'t get your userlvl!', sender)
                 return
+            senderlvl = self.getUserLevel(authname)
+            neededlvl = self.commands[command][3]
             if senderlvl >= neededlvl:
                 try:
                     self.commands[command][0](sender, args)
@@ -573,6 +574,8 @@ class IRCBot:
                         self.addUser(authname)
                 else:
                     self.debug('Tried to add %s to the database, but %s is not authed!' % (nick, nick), 2)
+                    userobj.setAuthName(None)
+                self.users.append(userobj)
             else:
                 self.debug('User %s already in the list!' % nick, 2)
 
