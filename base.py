@@ -424,7 +424,7 @@ class IRCBot:
         self.debug('Joined channel %s!' % chan, 1)
         # further
         self.debug('Will now send NickRequest!', 2)
-        self._send('WHO %s c\%nuhar' % self.getCurrentChannel())
+        self._send('WHO %s c%nuhar' % self.getCurrentChannel())
 
     def names(self, channel):
         '''
