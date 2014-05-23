@@ -28,8 +28,8 @@ class IRCBot:
         self.loadedPlugins    = []
         self.commandsByPlugin = {}
         self.databasefile     = 'users.db'
-        #
         self.curr_channel     = None
+        self.userObjects      = []
 
         # function calls
 
@@ -117,6 +117,12 @@ class IRCBot:
         get the channel
         '''
         return self.channel
+
+    def setCurrentChannel(self, channel):
+        '''
+        set the current channel
+        '''
+        self.curr_channel = channel
 
     def getCurrentChannel(self):
         '''
@@ -227,9 +233,8 @@ class IRCBot:
             senderlvl = self.getUserLevel(sender)
             neededlvl = self.commands[command][3]
             if senderlvl == None:
-                senderlvl = -1
-                if command != 'register':
-                    self.sendNotice('You are not in the database! Can\'t get your userlvl! You can only use the register-command!', sender)
+                self.sendNotice('You are not in the database! Can\'t get your userlvl!', sender)
+                return
             if senderlvl >= neededlvl:
                 try:
                     self.commands[command][0](sender, args)
@@ -356,6 +361,13 @@ class IRCBot:
     def safeDatabase(self):
         self.database.commit()
 
+    # User-Functions
+    def getUserObject(self, nick):
+        for user in self.userObjects:
+            if user.getNick() == nick:
+                return user
+        return None
+
     # IRC-Functions
     def pong(self, ping):
         '''
@@ -404,12 +416,15 @@ class IRCBot:
         # join channel
         self._send('JOIN %s' % chan)
         # set curr_channel
-        self.curr_channel = chan
+        self.setCurrentChannel(chan)
         # event
         eventobj = SelfJoinEvent(chan)
         self.gotEvent('onSelfJoin', eventobj)
         # debug
         self.debug('Joined channel %s!' % chan, 1)
+        # further
+        self.debug('Will now send NickRequest!', 2)
+        self._send('WHO %s c\%nuhar' % self.getCurrentChannel())
 
     def names(self, channel):
         '''
@@ -526,6 +541,9 @@ class IRCBot:
                 self.gotEvent('onUserJoin', eventobj)
                 # debug
                 self.debug('%s joined your channel!' % (joiner), 1)
+                #
+                self.debug('Will now send NickRequest!', 2)
+                self._send('WHO %s c\%nuhar' % self.getCurrentChannel())
         elif event == 'PART' or event == 'QUIT':
             quituser = raw.getSender().split('!')[0]
             if quituser != self.getNick():
@@ -534,15 +552,48 @@ class IRCBot:
                 self.gotEvent('onUserQuit', eventobj)
                 # debug
                 self.debug('%s parted from your channel!' % quituser, 1)
+        elif event == 'NICK':
+            oldnick = raw.getSender().split('!')[0]
+            newnick = raw.getMessage()
+            user = self.getUserObject(oldnick)
+            if user != None:
+                user.setNick(newnick)
+        elif event == '354':
+            #  WHO #channel c%nuhar
+            nick = raw.getTarget()
+            if nick[0] == '~':
+                nick = nick[1:]
+            self.debug('Got information about %s!' % nick, 2)
+            information = raw.getMessage().split(' ')
+            if self.getUserObject(nick) == None:
+                userobj = User(nick)
+                authname = information[2]
+                permissionsdict = self.getPermissionsDict()
+                if authname != '0':
+                    userobj.setAuthName(authname)
+                    if authname.lower() not in permissionsdict:
+                        self.addUser(authname)
+                else:
+                    self.debug('Tried to add %s to the database, but %s is not authed!' % nick, 2)
+            else:
+                self.debug('User %s already in the list!' % nick, 2)
 
 class User:
+    def __init__(self, nick):
+        self.curr_nick = nick
+        self.authName = None
 
-    def __init__(self, bot, nick):
-        self.nick = nick
-        self.bot = bot
+    def setNick(self, nick):
+        self.curr_nick = nick
 
     def getNick(self):
-        return self.nick
+        return self.curr_nick
+
+    def setAuthName(self, authname):
+        self.authName = authname
+
+    def getAuthName(self):
+        return self.authName
 
 class UserMessage:
 
@@ -581,6 +632,8 @@ class Raw:
             if len(parts) > 2:
                 parts = parts[3:]
                 self.message = ' '.join(parts)[1:]
+        else:
+            self.message = ' '.join(parts)
 
     def getEvent(self):
         return self.event
@@ -594,6 +647,7 @@ class Raw:
     def getMessage(self):
         return self.message
 
+# Events
 class MessageEvent:
     def __init__(self, user, message):
         self.user = user

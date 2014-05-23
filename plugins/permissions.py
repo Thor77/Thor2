@@ -5,42 +5,18 @@ class Permissions(Plugin):
     def onLoad(self):
         self.color_code = str('\003')
         # commands
-        self.addCommand('register', self.register_func, 'add your nick to the database', -1)
         self.addCommand('changeUserLevel', self.changeLevel_func, 'changeUserLevel <nick> <newlvl> | change <nick>s userlvl to <newlvl>', 2)
         self.addCommand('listUsers', self.listusers_func, 'list users in the database', 2)
         self.addCommand('mylevel', self.myLevel_func, 'show your permissions-lvl')
         self.addCommand('deleteUser', self.deleteUser_func, 'deleteUser <nick> | remove <nick>', 2)
         self.addCommand('adduser', self.addUser_func, 'addUser <nick> | add <nick> to the database', 1)
-        # events
-        self.registerEvent('onUserJoin', self.onUserJoin)
-
-    def onUserJoin(self, eventobj):
-        joiner = eventobj.getUser()
-        # add user to database
-        userdict = self.sock.getPermissionsDict()
-        if joiner.lower() not in userdict:
-            self.sock.addUser(joiner)
-            self.sendNotice('Hi %s! You\'ve been automatically added to the databse!' % joiner, joiner)
-
-    def register_func(self, sender, args):
-        permissionsdict = self.sock.getPermissionsDict()
-        if sender in permissionsdict:
-            self.sendNotice('You are alreay registered!', sender)
-            return
-        self.sock.addUser(sender)
-        permissiondict_new = self.sock.getPermissionsDict()
-        if sender in permissiondict_new:
-            self.sendMessage('%s was successfully added to the database!' % sender)
-        else:
-            self.sendNotice('There was an error adding you to the database!', sender)
-
     def addUser_func(self, sender, args):
         nick = args[0]
         permissionsdict = self.sock.getPermissionsDict()
         if nick in permissionsdict:
-            self.sendNotice('You are alreay registered!', sender)
+            self.sendNotice('%s is alreay registered!' % nick, sender)
             return
-        self.sock.addUser(nick)
+        self.sock.addUser(nick.lower())
         permissiondict_new = self.sock.getPermissionsDict()
         if nick in permissiondict_new:
             self.sendMessage('%s was successfully added to the database!' % sender)
@@ -58,7 +34,7 @@ class Permissions(Plugin):
                 self.sock.changeUserLevel(nick, newlvl)
                 self.sendMessage('UserLevel of %s successfully changed to %s!' % (nick, newlvl))
         else:
-            self.sendNotice('%s is not yet registered!' % nick, sender)
+            self.sendNotice('%s is not in the database!' % nick, sender)
 
     def myLevel_func(self, sender, args):
         userlvl = self.sock.getUserLevel(sender.lower())
@@ -73,5 +49,5 @@ class Permissions(Plugin):
 
     def deleteUser_func(self, sender, args):
         nick = args[0]
-        self.sock.deleteUser(nick)
+        self.sock.deleteUser(nick.lower())
         self.sendMessage('Successfully removed %s from the database!' % nick)
