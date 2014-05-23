@@ -575,7 +575,7 @@ class IRCBot:
                 else:
                     self.debug('Tried to add %s to the database, but %s is not authed!' % (nick, nick), 2)
                     userobj.setAuthName(None)
-                self.users.append(userobj)
+                self.userObjects.append(userobj)
             else:
                 self.debug('User %s already in the list!' % nick, 2)
 
