@@ -367,7 +367,7 @@ class IRCBot:
     # User-Functions
     def getUserObject(self, nick):
         for user in self.userObjects:
-            if user.getNick() == nick:
+            if user.getNick() == nick.lower():
                 return user
         return None
 
@@ -567,11 +567,11 @@ class IRCBot:
             nick = information[0]
             self.debug('Got information about %s!' % nick, 2)
             if self.getUserObject(nick) == None:
-                userobj = User(nick)
+                userobj = User(nick.lower())
                 authname = information[3]
                 permissionsdict = self.getPermissionsDict()
                 if authname != '0':
-                    userobj.setAuthName(authname)
+                    userobj.setAuthName(authname.lower())
                     if authname.lower() not in permissionsdict:
                         self.addUser(authname)
                 else:
