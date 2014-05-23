@@ -7,6 +7,7 @@ import pkgutil
 import inspect
 from plugin import Plugin
 import sqlite3
+import re
 
 class IRCBot:
 
@@ -158,7 +159,7 @@ class IRCBot:
         '''
         Send line to the server
         '''
-        line = line.replace('\n', '')
+        line = re.sub(r'\s+', ' ', line)
         self.debug('>>' + line, 2)
         self.sock.send((line + '\r\n').encode())
 
