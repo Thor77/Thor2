@@ -392,7 +392,7 @@ class IRCBot:
 
     def getUserNick(self, authname):
         authname = authname.lower()
-        authnameUserDict = {v:k for k, v in map.items()}
+        authnameUserDict = {v:k for k, v in self.nickAuthnameDict.items()}
         if authname in authnameUserDict:
             return authnameUserDict[authname]
         else:
