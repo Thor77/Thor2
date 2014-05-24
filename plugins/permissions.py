@@ -32,7 +32,8 @@ class Permissions(Plugin):
                 self.sendNotice('%s alreay has this level!', sender)
             else:
                 self.sock.changeUserLevel(nick, newlvl)
-                self.sendMessage('UserLevel of %s successfully changed to %s!' % (nick, newlvl))
+                self.sendNotice('UserLevel of %s successfully changed to %s!' % (nick, newlvl), sender)
+                self.sendNotice('%s changed your UserLevel to %s!' % (sender, newlvl), nick)
         else:
             self.sendNotice('%s is not in the database!' % nick, sender)
 

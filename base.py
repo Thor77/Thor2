@@ -29,7 +29,7 @@ class IRCBot:
         self.commandsByPlugin = {}
         self.databasefile     = 'users.db'
         self.curr_channel     = None
-        self.userObjects      = []
+        self.nickAuthnameDict = {}
 
         # function calls
 
@@ -229,13 +229,15 @@ class IRCBot:
     def gotCommand(self, command, sender, args):
         command = command.lower()
         sender = sender.lower()
-        userobj = self.getUserObject(sender)
+        authname = self.getAuthname(sender)
         if command in self.commands:
-            if userobj == None:
-                self.sendNotice('You are not in the database! Can\'t get your userlvl!', sender)
+            if authname == None:
+                self.sendNotice('You are not authed! Can\'t get your userlvl!', sender)
                 return
             else:
-                authname = userobj.getAuthName()
+                if not self.inDatabase(authname):
+                    self.sendNotice('You are not in the database! Can\'t get your userlvl!', sender)
+                    return
             senderlvl = self.getUserLevel(authname)
             neededlvl = self.commands[command][3]
             if senderlvl >= neededlvl:
@@ -333,7 +335,7 @@ class IRCBot:
         self.database_cursor.execute('UPDATE users SET lvl=? WHERE nick=?', (newuserlvl, nick))
         self.safeDatabase()
 
-    def addUser(self, nick):
+    def addUserToDatabase(self, nick):
         self.database_cursor.execute('INSERT INTO users VALUES (?, ?)', (str(nick).lower(), 0))
         self.debug('Successfully added "%s" to the database!' % nick, 2)
         self.safeDatabase()
@@ -345,7 +347,7 @@ class IRCBot:
             mydict[nick] = lvl
         return mydict
         # read database
-        # return dict {'nick' : permissionlvl} | {'thor77' : 2}s
+        # return dict {'nick' : permissionlvl} | {'thor77' : 2}
         # 2 => admin, 1 => moderator, 0 => none
 
     def deleteUser(self, nick):
@@ -364,12 +366,25 @@ class IRCBot:
     def safeDatabase(self):
         self.database.commit()
 
-    # User-Functions
-    def getUserObject(self, nick):
-        for user in self.userObjects:
-            if user.getNick() == nick.lower():
-                return user
-        return None
+    def inDatabase(self, authname):
+        usersdict = self.getPermissionsDict()
+        if authname in usersdict:
+            return True
+        else:
+            return False
+
+    # add User
+    def addUser(self, nick, authname):
+        if authname != '0':
+            self.nickAuthnameDict[nick] = authname
+            if not self.inDatabase(authname):
+                self.addUserToDatabase(authname)
+
+    def getAuthname(self, nick):
+        if nick in self.nickAuthnameDict:
+            return self.nickAuthnameDict[nick]
+        else:
+            return None
 
     # IRC-Functions
     def pong(self, ping):
@@ -395,7 +410,7 @@ class IRCBot:
         Send message to channel
         '''
         if reciever == None:
-            reciever = self.curr_channel
+            reciever = self.getCurrentChannel()
         self._send('PRIVMSG %s :%s' % (reciever, message))
         self.debug('<%s> %s' % (self.getNick(), message), 1)
 
@@ -425,9 +440,9 @@ class IRCBot:
         self.gotEvent('onSelfJoin', eventobj)
         # debug
         self.debug('Joined channel %s!' % chan, 1)
-        # further
+        # users in channel
         self.debug('Will now send NickRequest!', 2)
-        self._send('WHO %s c%%nuhar' % self.getCurrentChannel())
+        self.whoChannelUsers()
 
     def names(self, channel):
         '''
@@ -468,6 +483,11 @@ class IRCBot:
     def changeChannel(self, changeTo):
         self.part()
         self.join(changeTo)
+
+    def whoChannelUsers(self, channel=None):
+        if channel == None:
+            channel = self.getCurrentChannel()
+        self._send('WHO %s c%%nuhar' % channel)
 
     # modes
     def op(self, nick):
@@ -545,8 +565,7 @@ class IRCBot:
                 # debug
                 self.debug('%s joined your channel!' % (joiner), 1)
                 #
-                self.debug('Will now send NickRequest!', 2)
-                self._send('WHO %s c%%nuhar' % self.getCurrentChannel())
+                self.whoChannelUsers()
         elif event == 'PART' or event == 'QUIT':
             quituser = raw.getSender().split('!')[0]
             if quituser != self.getNick():
@@ -558,45 +577,14 @@ class IRCBot:
         elif event == 'NICK':
             oldnick = raw.getSender().split('!')[0]
             newnick = raw.getMessage()
-            user = self.getUserObject(oldnick)
-            if user != None:
-                user.setNick(newnick)
+            self.nickAuthnameDict[newnick] = self.nickAuthnameDict[oldnick]
+            del self.nickAuthnameDict[oldnick]
         elif event == '354':
             #  WHO #channel c%nuhar
             information = raw.getMessage().split(' ')
             nick = information[0]
-            self.debug('Got information about %s!' % nick, 2)
-            if self.getUserObject(nick) == None:
-                userobj = User(nick.lower())
-                authname = information[3]
-                permissionsdict = self.getPermissionsDict()
-                if authname != '0':
-                    userobj.setAuthName(authname.lower())
-                    if authname.lower() not in permissionsdict:
-                        self.addUser(authname)
-                else:
-                    self.debug('Tried to add %s to the database, but %s is not authed!' % (nick, nick), 2)
-                    userobj.setAuthName(None)
-                self.userObjects.append(userobj)
-            else:
-                self.debug('User %s already in the list!' % nick, 2)
-
-class User:
-    def __init__(self, nick):
-        self.curr_nick = nick
-        self.authName = None
-
-    def setNick(self, nick):
-        self.curr_nick = nick
-
-    def getNick(self):
-        return self.curr_nick
-
-    def setAuthName(self, authname):
-        self.authName = authname
-
-    def getAuthName(self):
-        return self.authName
+            authname = information[3]
+            self.addUser(nick, authname)
 
 class UserMessage:
 

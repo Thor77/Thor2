@@ -9,7 +9,7 @@ if len(sys.argv) == 4:
     newlvl = int(sys.argv[3])
 
     print('DatabaseFile: %s' % dbfile)
-    print('Nick: %s' % nick)
+    print('Authname: %s' % nick)
     print('NewLevel: %s' % newlvl)
 
     while True:
