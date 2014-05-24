@@ -38,7 +38,7 @@ class Help(Plugin):
 
     def commands_func(self, sender, args):
         plugins = {}
-        nick_lvl = self.sock.getUserLevel(sender)
+        nick_lvl = self.sock.getUserLevel(self.sock.getAuthname(sender.lower()).lower())
         for trigger in self.sock.commands:
             if self.sock.commands[trigger][3] <= nick_lvl:
                 plugin = self.sock.commands[trigger][2]

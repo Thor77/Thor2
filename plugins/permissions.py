@@ -21,7 +21,7 @@ class Permissions(Plugin):
         if nick in permissiondict_new:
             self.sendMessage('%s was successfully added to the database!' % sender)
         else:
-            self.sendNotice('There was an error adding you to the database!', sender)
+            self.sendNotice('There was an error adding %s to the database!' % nick, sender)
 
     def changeLevel_func(self, sender, args):
         authname = args[0].lower()
@@ -39,7 +39,8 @@ class Permissions(Plugin):
             self.sendNotice('%s is not in the database!' % authname, sender)
 
     def myLevel_func(self, sender, args):
-        userlvl = self.sock.getUserLevel(sender.lower())
+        authname = self.sock.getAuthName(sender)
+        userlvl = self.sock.getUserLevel(authname.lower())
         self.sendNotice('Your userlevel is %s!' % userlvl, sender)
 
     def listusers_func(self, sender, args):
@@ -50,10 +51,9 @@ class Permissions(Plugin):
         self.sendNotice(', '.join(userlist), sender)
 
     def deleteUser_func(self, sender, args):
-        nick = args[0]
-        usersdict = self.sock.getPermissionsDict()
-        if nick in usersdict:
-            self.sock.deleteUser(nick.lower())
-            self.sendMessage('Successfully removed %s from the database!' % nick)
+        authname = args[0].lower()
+        if self.sock.inDatabase(authname):
+            self.sock.deleteUser(authname)
+            self.sendMessage('Successfully removed %s from the database!' % authname)
         else:
-            self.sendNotice('%s is not in the database!' % nick, sender)
+            self.sendNotice('%s is not in the database! You have to use the authname, not the nick!' % authname, sender)
