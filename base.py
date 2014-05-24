@@ -389,6 +389,13 @@ class IRCBot:
         else:
             return None
 
+    def changeUserNick(self, oldnick, newnick):
+        oldnick = oldnick.lower()
+        newnick = newnick.lower()
+        if oldnick in self.nickAuthnameDict:
+            self.nickAuthnameDict[newnick] = self.nickAuthnameDict[oldnick]
+            del self.nickAuthnameDict[oldnick]
+
     # IRC-Functions
     def pong(self, ping):
         '''
@@ -492,6 +499,9 @@ class IRCBot:
             channel = self.getCurrentChannel()
         self._send('WHO %s c%%nuhar' % channel)
 
+    def changeNick(self, newnick):
+        self._send('NICK %s' % newnick)
+
     # modes
     def op(self, nick):
         self._send('MODE %s +o %s' % (self.getCurrentChannel(), nick))
@@ -580,8 +590,7 @@ class IRCBot:
         elif event == 'NICK':
             oldnick = raw.getSender().split('!')[0]
             newnick = raw.getMessage()
-            self.nickAuthnameDict[newnick] = self.nickAuthnameDict[oldnick]
-            del self.nickAuthnameDict[oldnick]
+            self.changeUserNick(oldnick, newnick)
         elif event == '354':
             #  WHO #channel c%nuhar
             information = raw.getMessage().split(' ')
