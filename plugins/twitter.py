@@ -16,12 +16,12 @@ class Twitter(Plugin):
         access_secret   = 'YFTUmQLmwz9fLW0zT9L36Vv2kqHnGwaeHhvBCklE4F28G'
         self.t          = Twython(consumer_key, consumer_secret, access_key, access_secret)
         # commands
-        self.addCommand('eTwitter', self.enableTwitter_func, 'enable Twitter-Tweet-sending')
-        self.addCommand('dTwitter', self.disableTwitter_func, 'disable Twitter-Tweet-sending')
-        self.addCommand('setSearch', self.setSearch_func, 'setSearch <searchstring> | set search to get reulsts from')
-        self.addCommand('showSearch', self.showSearch_func, 'show the current searchstring')
-        self.addCommand('setDelay', self.setDelay_func, 'setDelay <delay> | set delay between messages')
-        self.addCommand('showDelay', self.showDelay_func, 'show the delay')
+        self.addCommand('eTwitter', self.enableTwitter_func, 'enable Twitter-Tweet-sending', 1)
+        self.addCommand('dTwitter', self.disableTwitter_func, 'disable Twitter-Tweet-sending', 1)
+        self.addCommand('setSearch', self.setSearch_func, 'setSearch <searchstring> | set search to get reulsts from', 1)
+        self.addCommand('showSearch', self.showSearch_func, 'show the current searchstring', 1)
+        self.addCommand('setDelay', self.setDelay_func, 'setDelay <delay> | set delay between messages', 1)
+        self.addCommand('showDelay', self.showDelay_func, 'show the delay', 1)
         # init Thread
         self.resetThread()
 
