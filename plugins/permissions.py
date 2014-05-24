@@ -24,18 +24,19 @@ class Permissions(Plugin):
             self.sendNotice('There was an error adding you to the database!', sender)
 
     def changeLevel_func(self, sender, args):
-        nick = args[0].lower()
+        authname = args[0].lower()
+        nick = self.sock.getUserNick(authname)
         newlvl = int(args[1])
         userdict = self.sock.getPermissionsDict()
-        if nick in userdict:
-            if userdict[nick] == newlvl:
+        if authname in userdict:
+            if userdict[authname] == newlvl:
                 self.sendNotice('%s alreay has this level!', sender)
             else:
-                self.sock.changeUserLevel(nick, newlvl)
-                self.sendNotice('UserLevel of %s successfully changed to %s!' % (nick, newlvl), sender)
+                self.sock.changeUserLevel(authname, newlvl)
+                self.sendNotice('UserLevel of %s successfully changed to %s!' % (authname, newlvl), sender)
                 self.sendNotice('%s changed your UserLevel to %s!' % (sender, newlvl), nick)
         else:
-            self.sendNotice('%s is not in the database!' % nick, sender)
+            self.sendNotice('%s is not in the database!' % authname, sender)
 
     def myLevel_func(self, sender, args):
         userlvl = self.sock.getUserLevel(sender.lower())

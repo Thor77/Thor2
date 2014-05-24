@@ -389,6 +389,14 @@ class IRCBot:
         else:
             return None
 
+    def getUserNick(self, authname):
+        authname = authname.lower()
+        authnameUserDict = {v:k for k, v in map.items()}
+        if authname in authnameUserDict:
+            return authnameUserDict[authname]
+        else:
+            return None
+
     def changeUserNick(self, oldnick, newnick):
         oldnick = oldnick.lower()
         newnick = newnick.lower()
