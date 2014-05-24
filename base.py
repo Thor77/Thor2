@@ -591,15 +591,16 @@ class IRCBot:
             oldnick = raw.getSender().split('!')[0]
             self.debug('Found old nick: %s' % oldnick, 2)
             newnick = raw.getMessage()
+            print(raw)
             self.debug('Found new nick: %s' % newnick, 2)
             self.changeUserNick(oldnick, newnick)
         elif event == '354':
             #  WHO #channel c%nuhar
             information = raw.getMessage().split(' ')
             nick = information[2]
-            self.debug('Found nick: %s' % nick, 2)
+            #self.debug('Found nick: %s' % nick, 2)
             authname = information[3]
-            self.debug('Found authname: %s' % authname, 2)
+            #self.debug('Found authname: %s' % authname, 2)
             self.addUser(nick, authname)
 
 class UserMessage:
