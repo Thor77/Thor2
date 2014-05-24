@@ -583,7 +583,9 @@ class IRCBot:
             #  WHO #channel c%nuhar
             information = raw.getMessage().split(' ')
             nick = information[0]
+            self.debug('Found nick: %s' % nick, 2)
             authname = information[3]
+            self.debug('Found authname: %s' % authname, 2)
             self.addUser(nick, authname)
 
 class UserMessage:
