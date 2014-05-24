@@ -401,7 +401,7 @@ class IRCBot:
         '''
         Send pong to the server
         '''
-        self._send('PONG %s' % ping)
+        self._send('PONG :%s' % ping)
 
     def register(self):
         '''
