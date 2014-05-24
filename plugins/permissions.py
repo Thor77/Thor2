@@ -39,7 +39,7 @@ class Permissions(Plugin):
             self.sendNotice('%s is not in the database!' % authname, sender)
 
     def myLevel_func(self, sender, args):
-        authname = self.sock.getAuthName(sender)
+        authname = self.sock.getAuthname(sender)
         userlvl = self.sock.getUserLevel(authname.lower())
         self.sendNotice('Your userlevel is %s!' % userlvl, sender)
 
