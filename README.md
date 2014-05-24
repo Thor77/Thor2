@@ -20,7 +20,7 @@ START HERE
     
 ## Sample Plugin
 Place your plugin in the plugins-folder, it will be load automatically at startup.
-You can reload plugins using the reload-command!
+You can reload plugins using the reload-command!  
     from plugin import Plugin
     
     class MyPlugin(Plugin):
