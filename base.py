@@ -378,7 +378,8 @@ class IRCBot:
         nick = nick.lower()
         authname = authname.lower()
         if authname != '0':
-            self.nickAuthnameDict[nick] = authname
+            if not nick in self.nickAuthnameDict:
+                self.nickAuthnameDict[nick] = authname
             if not self.inDatabase(authname):
                 self.addUserToDatabase(authname)
 
