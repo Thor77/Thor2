@@ -589,7 +589,9 @@ class IRCBot:
                 self.debug('%s parted from your channel!' % quituser, 1)
         elif event == 'NICK':
             oldnick = raw.getSender().split('!')[0]
+            self.debug('Found old nick: %s' % oldnick, 2)
             newnick = raw.getMessage()
+            self.debug('Found new nick: %s' % newnick, 2)
             self.changeUserNick(oldnick, newnick)
         elif event == '354':
             #  WHO #channel c%nuhar
