@@ -590,8 +590,7 @@ class IRCBot:
         elif event == 'NICK':
             oldnick = raw.getSender().split('!')[0]
             self.debug('Found old nick: %s' % oldnick, 2)
-            newnick = raw.getMessage()
-            print(newnick)
+            newnick = raw.getTarget()[1:]
             self.debug('Found new nick: %s' % newnick, 2)
             self.changeUserNick(oldnick, newnick)
         elif event == '354':
