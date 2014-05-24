@@ -594,7 +594,7 @@ class IRCBot:
         elif event == '354':
             #  WHO #channel c%nuhar
             information = raw.getMessage().split(' ')
-            nick = information[0]
+            nick = information[2]
             self.debug('Found nick: %s' % nick, 2)
             authname = information[3]
             self.debug('Found authname: %s' % authname, 2)

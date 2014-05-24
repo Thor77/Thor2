@@ -8,6 +8,7 @@ class IRC(Plugin):
         self.addCommand('deop', self.deop_func, 'deop <nick> | remove <nick>s op rights', 2)
         self.addCommand('voice', self.voice_func, 'voice <nick> | allow <nick> to speak', 1)
         self.addCommand('devoice', self.devoice_func, 'devoice <nick> | deny <nick> to speak', 1)
+        self.addCommand('changeNick', self.changeNick_func, 'changeNick <newnick> | change the bots nick to <newnick>', 2)
 
     def op_func(self, sender, args):
         nick = args[0]
@@ -28,3 +29,7 @@ class IRC(Plugin):
         nick = args[0]
         self.sock.devoice(nick)
         self.sendMessage('%s darf hier nicht mehr sprechen!' % nick)
+
+    def changeNick_func(self, sender, args):
+        newnick = args[0]
+        self.sock.changeNick(newnick)
