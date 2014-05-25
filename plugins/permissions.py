@@ -11,14 +11,14 @@ class Permissions(Plugin):
         self.addCommand('deleteUser', self.deleteUser_func, 'deleteUser <nick> | remove <nick>', 2)
         self.addCommand('adduser', self.addUser_func, 'addUser <nick> | add <nick> to the database', 1)
     def addUser_func(self, sender, args):
-        nick = args[0]
+        nick = args[0].lower()
         permissionsdict = self.sock.getPermissionsDict()
         if nick in permissionsdict:
             self.sendNotice('%s is alreay registered!' % nick, sender)
             return
-        self.sock.addUser(nick.lower(), nick.lower())
+        self.sock.addUser(nick, nick)
         permissiondict_new = self.sock.getPermissionsDict()
-        if nick.lower() in permissiondict_new:
+        if nick in permissiondict_new:
             self.sendMessage('%s was successfully added to the database!' % sender)
         else:
             self.sendNotice('There was an error adding %s to the database!' % nick, sender)
