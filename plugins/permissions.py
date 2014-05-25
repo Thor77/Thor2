@@ -19,7 +19,7 @@ class Permissions(Plugin):
         self.sock.addUser(nick, nick)
         permissiondict_new = self.sock.getPermissionsDict()
         if nick in permissiondict_new:
-            self.sendMessage('%s was successfully added to the database!' % sender)
+            self.sendNotice('%s was successfully added to the database!' % nick, sender)
         else:
             self.sendNotice('There was an error adding %s to the database!' % nick, sender)
 
