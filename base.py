@@ -190,7 +190,7 @@ class IRCBot:
         b = ''
         data = True
         while data:
-            raw = self.sock.recv(4096).decode()
+            raw = self.sock.recv(4096).decode('UTF-8', 'ignore')
             b += raw
             while b.find('\n') != -1:
                 line, b = b.split('\n', 1)
