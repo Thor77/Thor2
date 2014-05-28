@@ -21,7 +21,7 @@ START HERE
     debuglevel = 0 # debuglvl | 0 => nothing 1 => important messages 2 => everything
 
 ### Set Auth-Password
-Append this line to the __init__.py:
+Append this line to the \_\_init\_\_.py:
     bot.setAuthPassword('pw') # set the auth password to 'pw'
     
 ## Sample Plugin
