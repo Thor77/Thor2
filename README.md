@@ -6,19 +6,28 @@ My IRC-Bot named Thor2
 START HERE
 ==========
 ## The bot.cfg-File
+
+#### Server-Section
     
-    [Server]
-    ip         = irc.quakenet.org # ip of the irc-server
-    port       = 6667 # port of the irc-server
+| Key  |       Description      |    Type |
+|------|:----------------------:|--------:|
+|  IP  |  IP of the IRC-Server  | String  |
+| Port | Port of the IRC-Server | Integer |
 
-    [IRC]
-    realname   = Thor2 # realname of the bot
-    nick       = Thor2 # nick of the bot
+#### IRC-Section
 
-    [Bot]
-    call       = $ # char the bot will wait for ($help)
-    channel    = #thorsraum # channel to join
-    debuglevel = 0 # debuglvl | 0 => nothing 1 => important messages 2 => everything
+| Key      |     Description     |   Type |
+|----------|:-------------------:|-------:|
+| Realname | Realname of the bot | String |
+|   Nick   |   Nick of the bot   | String |
+
+#### Bot-Section
+
+| Key        |                      Description                      |    Type |
+|------------|:-----------------------------------------------------:|--------:|
+|    call    |                  char before commands                 |  String |
+|   channel  |                    channel to join                    |  String |
+| debuglevel |  0 => nothing 1 => important messages 2 => everything | Integer |
 
 ### Set Auth-Password
 Append this line to the \_\_init\_\_.py:  
