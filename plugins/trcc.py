@@ -10,11 +10,16 @@ class TheRadioCC(Plugin):
 		# commands
 		self.addCommand('eannounce', self.eannounce_func, 'enable NP-Announcing', 1)
 		self.addCommand('dannounce', self.dannounce_func, 'disable NP-Announcing', 1)
+		self.addCommand('np', self.np_func, 'show the now playing song on TheRadioCC')
 		# start timer
 		t = threading.Timer(10, self.announce)
 		t.daemon = True
 		t.start()
-		self.debug('Timer started!', 2)
+		self.debug('Trcc-Announce-Timer started!', 2)
+
+	def np_func(self, sender, args):
+		current = requests.get('http://theradio.cc:12011').text
+		self.sendMessage(current)
 
 	def eannounce_func(self, sender, args):
 		if not self.np_announce:
