@@ -5,18 +5,24 @@ My IRC-Bot named Thor2
 
 START HERE
 ==========
-## The init-File
-    from base import IRCBot
+## The bot.cfg-File
     
-    bot = IRCBot()
-    bot.setServer('irc.quakenet.org') # the irc-server
-    bot.setPort(6667) # port of the server
-    bot.setRealname('Realname') # realname of the bot
-    bot.setNick('Nick') # nick of the bot
-    bot.setCall('>') # char to call the bot
-    bot.setChannel('#mychannel') # channel to join after connect
-    bot.setDebugLevel(1) #  0 => nothing 1 => important messages (recommend) 2 => everyhthing
-    bot.start() # start the bot
+    [Server]
+    ip         = irc.quakenet.org # ip of the irc-server
+    port       = 6667 # port of the irc-server
+
+    [IRC]
+    realname   = Thor2 # realname of the bot
+    nick       = Thor2 # nick of the bot
+
+    [Bot]
+    call       = $ # char the bot will wait for ($help)
+    channel    = #thorsraum # channel to join
+    debuglevel = 0 # debuglvl | 0 => nothing 1 => important messages 2 => everything
+
+### Set Auth-Password
+Append this line to the __init__.py:
+    bot.setAuthPassword('pw') # set the auth password to 'pw'
     
 ## Sample Plugin
 Place your plugin in the plugins-folder, it will be load automatically at startup.
