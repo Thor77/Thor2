@@ -11,23 +11,23 @@ START HERE
     
 | Key  |       Description      |    Type |
 |------|:----------------------:|--------:|
-|  IP  |  IP of the IRC-Server  | String  |
-| Port | Port of the IRC-Server | Integer |
+|  ip  |  ip of the IRC-server  | string  |
+| port | port of the IRC-server | integer |
 
 #### IRC-Section
 
 | Key      |     Description     |   Type |
 |----------|:-------------------:|-------:|
-| Realname | Realname of the bot | String |
-|   Nick   |   Nick of the bot   | String |
+| realname | realname of the bot | string |
+|   nick   |   nick of the bot   | string |
 
 #### Bot-Section
 
 | Key        |                      Description                      |    Type |
 |------------|:-----------------------------------------------------:|--------:|
-|    call    |                  char before commands                 |  String |
-|   channel  |                    channel to join                    |  String |
-| debuglevel |  0 => nothing 1 => important messages 2 => everything | Integer |
+|    call    |                  char before commands                 |  string |
+|   channel  |                    channel to join                    |  string |
+| debuglevel |  0 => nothing 1 => important messages 2 => everything | integer |
 
 ### Set Auth-Password
 Append this line to the \_\_init\_\_.py:  
