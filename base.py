@@ -601,6 +601,10 @@ class IRCBot:
             self.debug('Found old nick: %s' % oldnick, 2)
             newnick = raw.getTarget()[1:]
             self.debug('Found new nick: %s' % newnick, 2)
+            # event
+            eventobj = UserNickChange(oldnick, newnick)
+            self.gotEvent('onUserNickChange', eventobj)
+            # edit user
             self.changeUserNick(oldnick, newnick)
         elif event == '354':
             #  WHO #channel c%nuhar
@@ -695,3 +699,14 @@ class  UserQuitEvent:
 
     def getUser(self):
         return self.user
+
+class UserNickChange:
+    def __init__(self, oldnick, newnick):
+        self.oldnick = oldnick
+        self.newnick = newnick
+
+    def getOldNick(self):
+        return self.oldnick
+
+    def getNewNick(self):
+        return self.newnick

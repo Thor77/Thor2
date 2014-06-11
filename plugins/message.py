@@ -10,6 +10,7 @@ class Message(Plugin):
         # events
         self.registerEvent('onUserJoin', self.onUserJoin)
         self.registerEvent('onUserMessage', self.onUserMessage)
+        self.registerEvent('onUserNickChange', self.onUserNickChange)
 
     def onUserJoin(self, eventobj):
         joiner = eventobj.getUser()
@@ -20,6 +21,17 @@ class Message(Plugin):
         nick = eventobj.getSender()
         if nick in self.messages:
             self.sendWaitingMessages(nick)
+
+    def onUserNickChange(self, eventobj):
+        oldnick = eventobj.getOldNick()
+        newnick = eventobj.getNewNick()
+        if not newnick in self.messages and not oldnick in self.messages:
+            return
+        if newnick.lower().find('afk') == -1 and newnick.lower().find('off') == -1:
+            self.sendWaitingMessages(oldnick)
+        else:
+            self.messages[newnick] = self.messages[oldnick]
+            del self.messages[oldnick]
 
     def addMessage_func(self, sender, args):
         nick = args[0]

@@ -75,6 +75,10 @@ Events
 ## onUserQuit
 ### Methods
     getUser
+## onUserNickChange
+### Methods
+    getOldNick
+    getNewNick
 
 TODO
 ====
