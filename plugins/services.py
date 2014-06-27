@@ -19,9 +19,9 @@ class Services(Plugin):
         self.sendMessage('%s - %s' % (firstresult['titleNoFormatting'], firstresult['url']))
 
     def googleLink_func(self, sender, args):
-        link = 'https://www.google.com/#q=' + args.join('+')
+        link = 'https://www.google.com/#q=' + '+'.join(args)
         self.sendMessage(link)
 
     def lmgtfy_func(self, sender, args):
-        link = 'http://lmgtfy.com/?q=' + args.join('+')
+        link = 'http://lmgtfy.com/?q=' + '+'.join(args)
         self.sendMessage(link)
