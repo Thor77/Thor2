@@ -23,7 +23,7 @@ class OpenWeatherMap(Plugin):
 
 
     def weather_cmd(self, sender, args):
-        location = args[0]
+        location = args[0:]
         weather = self.getWeather(location)
         if weather == None:
             self.sendNotice('Can\'t find this location!', sender)
