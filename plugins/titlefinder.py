@@ -57,3 +57,5 @@ class TitleFinder(Plugin):
                 return soup.title.string
         except urllib.error.HTTPError as e:
             self.debug('TitleFinder: HTTPError %s while finding title!' % e.code, 1)
+        except:
+            self.debug('TitleFinder: ERROR finding title!', 1)
