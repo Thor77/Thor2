@@ -29,4 +29,4 @@ class OpenWeatherMap(Plugin):
             self.sendNotice('Can\'t find this location!', sender)
         else:
             city, country, main, description, temperature = weather
-            self.sendMessage('Weather in {city}, {country}: {temperature} and {main} ({description})'.format(city=city, country=country, temperature=temperature, main=main, description=description))
+            self.sendMessage('Weather in {city}, {country}: {temperature}°C and {main} ({description})'.format(city=city, country=country, temperature=temperature, main=main, description=description))
