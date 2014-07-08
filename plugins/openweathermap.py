@@ -4,7 +4,8 @@ import requests
 class OpenWeatherMap(Plugin):
 
     def onLoad(self):
-        self.addCommand('weather'. self.weather_cmd, 'weather <city> | show weather for <city>')
+        # commands
+        self.addCommand('weather', self.weather_cmd, 'weather <city> | show weather for <city>')
 
     def getWeather(self, location):
         owm_url = 'http://api.openweathermap.org/data/2.5/weather'
