@@ -17,7 +17,7 @@ class Horoskop(Plugin):
             self.mode = 0
         else:
             self.mode = 1
-        self.sendNotice('Successfully changed mode to %s!' % self.mode)
+        self.sendNotice('Successfully changed mode to %s!' % self.mode, sender)
 
     def horoMode_cmd(self, sender, args):
         i_mode = {0: 'only first sentence', 1: 'complete'}
@@ -33,7 +33,7 @@ class Horoskop(Plugin):
             else:
                 self.sendMessage(horo)
         else:
-            self.sendNotice('Invalid asterisk!')
+            self.sendNotice('Invalid asterisk!', sender)
 
     def get_horoskop(self, asterisk):
         y_url = 'https://de.horoskop.yahoo.com/horoskop/'
