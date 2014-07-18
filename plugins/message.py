@@ -25,9 +25,9 @@ class Message(Plugin):
     def onUserNickChange(self, eventobj):
         oldnick = eventobj.getOldNick()
         newnick = eventobj.getNewNick()
-        if not newnick in self.messages and not oldnick in self.messages:
+        if not oldnick in self.messages:
             return
-        if newnick.lower().find('afk') == -1 and newnick.lower().find('off') == -1:
+        if not 'afk' in newnick.lower() and not 'off' in newnick.lower():
             self.sendWaitingMessages(oldnick)
         else:
             self.messages[newnick] = self.messages[oldnick]
